@@ -21,6 +21,8 @@ public class PantryHubBackendApplication {
     public void logPortAfterStartup() {
         String port = environment.getProperty("local.server.port");
         System.out.println("🚀 Application running on port: http://localhost:" + port);
+        System.out.println("Swagger Link to check API's");
+        System.out.println("http://localhost:"+port+"/swagger-ui/index.html#/");
     }
 
 }
