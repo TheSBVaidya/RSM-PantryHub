@@ -1,15 +1,23 @@
 package com.pantryhub.controller;
 
+import com.pantryhub.dto.request.LoginReqDto;
 import com.pantryhub.dto.request.RegisterReqDto;
+import com.pantryhub.dto.response.AuthResDto;
 import com.pantryhub.dto.response.UserResDto;
+import com.pantryhub.security.JwtTokenProvider;
 import com.pantryhub.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,5 +43,11 @@ public class AuthController {
         UserResDto userResDto = userService.RegisterUser(registerReqDto);
 
         return new ResponseEntity<>(userResDto, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody LoginReqDto loginReqDto) {
+        AuthResDto authResDto = userService.LoginUser(loginReqDto);
+        return ResponseEntity.ok(authResDto);
     }
 }
