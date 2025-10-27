@@ -1,9 +1,6 @@
+import LoginPage from './screens/LoginPage.jsx';
 
 function App() {
-
-  return (
-    <div>Hello</div>
-  )
+  return <LoginPage />;
 }
-
-export default App
+export default App;
