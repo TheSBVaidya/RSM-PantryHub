@@ -68,7 +68,17 @@ public class JwtTokenProvider {
 
     public Long getUserIdFromJwt(String token) {
         Claims claims =getAllClaimsFromToken(token);
-        return Long.parseLong(claims.getId());
+
+        String subject = claims.getSubject().trim();
+        System.out.println("DEBUG: Subject extracted from token: [" + subject + "]");
+        // --- END OF DEBUG LINE ---
+
+        // Check karein ki subject null ya empty toh nahi
+        if (subject == null || subject.trim().isEmpty()) {
+            logger.error("JWT claims string is null or empty.");
+            throw new MalformedJwtException("JWT claims string is null or empty.");
+        }
+        return Long.parseLong(subject);
     }
 
     public String getEmailFromJwt(String token) {

@@ -19,6 +19,7 @@ Desktop.ini
 # Log files
 # =========================
 **/*.log
+**/*.prettierrc
 
 # =========================
 # Java / Spring Boot Backend
@@ -58,3 +59,4 @@ Desktop.ini
 *.tmp
 *.bak
 *.swp
+*.prettierrc
