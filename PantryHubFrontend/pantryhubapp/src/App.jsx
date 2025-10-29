@@ -46,9 +46,9 @@ function App() {
     <div>
       {/*<Header />*/}
       {isAuthenticated ? (
-        <DashboardPage user={user} onLogout={handleLogout()} />
+        <DashboardPage user={user} onLogout={handleLogout} />
       ) : (
-        <LoginPage onLoginSuccess={handleLoginSuccess()} />
+        <LoginPage onLoginSuccess={handleLoginSuccess} />
       )}
       {/*<Footer />*/}
     </div>

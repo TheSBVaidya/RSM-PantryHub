@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SpinIcon } from './Icons.jsx';
+import { FacebookIcon, GithubIcon, GoogleIcon, SpinIcon } from './Icons.jsx';
 import { useGoogleLogin } from '@react-oauth/google';
 import apiClient from '../api/axiosInstance.js';
 
@@ -52,6 +52,9 @@ const LoginPage = ({ onLoginSuccess }) => {
       setError('Google login failed. Please try again.');
     },
   });
+
+  const socialButtonClass =
+    'w-full inline-flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 disabled:opacity-70';
 
   return (
     <div className="max-w-md w-full mx-auto my-12 p-6 sm:p-8 bg-white rounded-lg shadow-lg border border-gray-100">
@@ -136,6 +139,54 @@ const LoginPage = ({ onLoginSuccess }) => {
         >
           {isLoading ? <SpinIcon /> : 'Login'}
         </button>
+
+        {/* --- START: Added Social Login UI --- */}
+        <div className="pt-2">
+          {/* Divider */}
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-xs">
+              <span className="bg-white px-2 text-gray-500">
+                Or continue with
+              </span>
+            </div>
+          </div>
+
+          {/* Social Buttons */}
+          <div className="space-y-3">
+            <button
+              type="button"
+              className={socialButtonClass}
+              disabled={isLoading}
+              onClick={() => handleGoogleLogin()}
+            >
+              <GoogleIcon />
+              Continue with Google
+            </button>
+
+            <button
+              type="button"
+              className={socialButtonClass}
+              disabled={isLoading}
+              // onClick={() => handleSocialLogin('facebook')}
+            >
+              <FacebookIcon />
+              Continue with Facebook
+            </button>
+
+            <button
+              type="button"
+              className={socialButtonClass}
+              disabled={isLoading}
+              // onClick={() => handleSocialLogin('github')}
+            >
+              <GithubIcon />
+              Continue with GitHub
+            </button>
+          </div>
+        </div>
 
         <p className="text-center text-xs text-gray-500 pt-4">
           Don't have an account?
