@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { SpinIcon } from './Icons.jsx';
+import { useGoogleLogin } from '@react-oauth/google';
 import apiClient from '../api/axiosInstance.js';
 
-const LoginPage = () => {
+const LoginPage = ({ onLoginSuccess }) => {
   const [error, setError] = useState(null);
   const [email, setEmail] = useState('rahul.sharma@example.com');
   const [password, setPassword] = useState('your_secure_password456');
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,12 +18,40 @@ const LoginPage = () => {
 
     try {
       const response = await apiClient.post('/auth/login', { email, password });
-      console.log('Login successful:', response.data);
-      console.log('accessToken: ', response.data.accessToken);
+      const { accessToken, userResDto } = response.data;
+      onLoginSuccess(userResDto, accessToken);
     } catch (error) {
       console.log(error);
+      setError('Invalid email or password. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  const handleGoogleLogin = useGoogleLogin({
+    flow: 'code',
+    onSuccess: async (codeResponse) => {
+      setIsGoogleLoading(true);
+      setError(null);
+
+      try {
+        const response = await apiClient.post('/auth/google', {
+          code: codeResponse.code,
+        });
+        const { token, user } = response.data;
+        onLoginSuccess(user, token);
+      } catch (err) {
+        console.error('Failed to login with Google:', err);
+        setError('Google login failed. Please try again.');
+      } finally {
+        setIsGoogleLoading(false);
+      }
+    },
+    onError: (errorResponse) => {
+      console.error('Google login error', errorResponse);
+      setError('Google login failed. Please try again.');
+    },
+  });
 
   return (
     <div className="max-w-md w-full mx-auto my-12 p-6 sm:p-8 bg-white rounded-lg shadow-lg border border-gray-100">
