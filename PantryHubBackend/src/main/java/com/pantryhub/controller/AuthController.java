@@ -17,10 +17,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -55,7 +51,7 @@ public class AuthController {
     }
 
     @PostMapping("/login/google")
-    public ResponseEntity<AuthResDto> loginWithGoogle(@Valid @RequestBody GoogleAuthReqDto googleAuthReqDto) {
+    public ResponseEntity<AuthResDto> loginWithGoogle(@RequestBody GoogleAuthReqDto googleAuthReqDto) {
         AuthResDto authResDto = authService.loginWithGoogle(googleAuthReqDto);
         return ResponseEntity.ok(authResDto);
     }

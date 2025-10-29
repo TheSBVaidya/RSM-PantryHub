@@ -31,7 +31,7 @@ public class AuthServiceImpl implements AuthService {
     @Value("${google.redirect.uri}")
     private String googleRedirectUri;
 
-    @Value("${googleTokenUri}")
+    @Value("${google.token.uri}")
     private String googleTokenUri;
 
     @Value("${google.user-info.uri}")
@@ -48,7 +48,6 @@ public class AuthServiceImpl implements AuthService {
 
 //    @Autowired
 //    private PasswordEncoder passwordEncoder;
-
 
     @Override
     public AuthResDto loginWithGoogle(GoogleAuthReqDto googleAuthReqDto) {
