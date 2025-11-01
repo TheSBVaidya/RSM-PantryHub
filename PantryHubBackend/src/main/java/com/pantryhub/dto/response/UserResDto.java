@@ -1,9 +1,6 @@
 package com.pantryhub.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -19,6 +16,7 @@ public class UserResDto {
     private String email;
     private String phone;
     private String role;
+    private String img_url;
     private LocalDateTime createdAt;
 
 

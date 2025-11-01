@@ -44,13 +44,13 @@ function App() {
 
   return (
     <div>
-      {/*<Header />*/}
+      <Header />
       {isAuthenticated ? (
         <DashboardPage user={user} onLogout={handleLogout} />
       ) : (
         <LoginPage onLoginSuccess={handleLoginSuccess} />
       )}
-      {/*<Footer />*/}
+      <Footer />
     </div>
   );
 }

@@ -22,7 +22,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    @Value("${google.client.id")
+    @Value("${google.client.id}")
     private String googleClientId;
 
     @Value("${google.client.secret}")
@@ -46,8 +46,8 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public AuthResDto loginWithGoogle(GoogleAuthReqDto googleAuthReqDto) {
@@ -72,6 +72,7 @@ public class AuthServiceImpl implements AuthService {
         userResDto.setLastName(users.getLastName());
         userResDto.setRole(users.getRole());
         userResDto.setPhone(users.getPhone());
+        userResDto.setImg_url(users.getImageUrl());
         userResDto.setCreatedAt(users.getCreatedAt());
 
         AuthResDto authResDto = new AuthResDto();
@@ -88,13 +89,16 @@ public class AuthServiceImpl implements AuthService {
                     //User not found, so create a new one
                     Users newUser = new Users();
                     newUser.setEmail(googleUserInfo.getEmail());
-                    newUser.setFirstName(googleUserInfo.getGive_name());
+                    newUser.setFirstName(googleUserInfo.getGiven_name());
                     newUser.setLastName(googleUserInfo.getFamily_name());
                     newUser.setImageUrl(googleUserInfo.getPicture());
                     newUser.setEmailVerified(googleUserInfo.getEmail_verified());
-                    newUser.setProvider(googleUserInfo.getProvider());
+                    newUser.setProvider("GOOGLE");
                     newUser.setRole("ROLE_USER");
-                    newUser.setPassword("GooglePassword");
+
+                    String password = "GooglePassword";
+                    newUser.setPassword(passwordEncoder.encode(password));
+
                     newUser.setPhone("996746216395");
 
                     return userRepository.save(newUser);
@@ -115,9 +119,6 @@ public class AuthServiceImpl implements AuthService {
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(body, httpHeaders);
 
         ResponseEntity<GoogleTokenResDto> response = restTemplate.postForEntity(googleTokenUri, requestEntity, GoogleTokenResDto.class);
-
-        System.out.println("Google Access Token: " + response.getBody().getAccessToken());
-        System.out.println("Google Body: " + response.getBody());
         return response.getBody().getAccessToken();
     }
 
@@ -128,9 +129,6 @@ public class AuthServiceImpl implements AuthService {
         HttpEntity<?> requestEntity = new HttpEntity<>(headers);
 
         ResponseEntity<GoogleUserInfo> response = restTemplate.exchange(googleUserInfoUri, HttpMethod.GET, requestEntity, GoogleUserInfo.class);
-
-        System.out.println("Google Body: " + response.getBody());
-
         return response.getBody();
     }
 }

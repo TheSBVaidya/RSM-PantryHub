@@ -45,10 +45,10 @@ const DashboardPage = ({ user, onLogout }) => {
             </h2>
             <div className="flex items-start space-x-6">
               <div className="flex-shrink-0">
-                {user?.picture ? (
+                {user?.img_url ? (
                   <img
                     className="h-20 w-20 rounded-full object-cover"
-                    src={user.picture}
+                    src={user.img_url}
                     alt="Profile"
                   />
                 ) : (

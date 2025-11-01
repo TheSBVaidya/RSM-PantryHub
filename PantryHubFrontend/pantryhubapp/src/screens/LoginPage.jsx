@@ -38,8 +38,11 @@ const LoginPage = ({ onLoginSuccess }) => {
         const response = await apiClient.post('/auth/google', {
           code: codeResponse.code,
         });
-        const { token, user } = response.data;
-        onLoginSuccess(user, token);
+
+        // console.log('USER: ' + response.data.userResDto);
+
+        const { accessToken, userResDto } = response.data;
+        onLoginSuccess(userResDto, accessToken);
       } catch (err) {
         console.error('Failed to login with Google:', err);
         setError('Google login failed. Please try again.');

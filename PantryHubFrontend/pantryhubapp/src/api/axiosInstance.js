@@ -2,7 +2,8 @@ import axios from 'axios';
 
 // Step 1 : Create Instance
 const apiClient = axios.create({
-  baseURL: '/api', //we have setup the proxy
+  // baseURL: '/api', //we have setup the proxy
+  baseURL: 'http://localhost:8080/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -21,8 +22,7 @@ apiClient.interceptors.request.use(
     return config;
   },
   (error) => {
-    return;
-    Promise.reject(error);
+    return Promise.reject(error);
   }
 );
 

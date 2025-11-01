@@ -50,8 +50,8 @@ public class AuthController {
         return ResponseEntity.ok(authResDto);
     }
 
-    @PostMapping("/login/google")
-    public ResponseEntity<AuthResDto> loginWithGoogle(@RequestBody GoogleAuthReqDto googleAuthReqDto) {
+    @PostMapping("/google")
+    public ResponseEntity<AuthResDto> loginWithGoogle(@Valid @RequestBody GoogleAuthReqDto googleAuthReqDto) {
         AuthResDto authResDto = authService.loginWithGoogle(googleAuthReqDto);
         return ResponseEntity.ok(authResDto);
     }
