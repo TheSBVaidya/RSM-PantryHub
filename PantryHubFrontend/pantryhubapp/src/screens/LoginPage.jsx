@@ -1,12 +1,17 @@
 import { useState } from 'react';
-import { FacebookIcon, GithubIcon, GoogleIcon, SpinIcon } from './Icons.jsx';
+import {
+  FacebookIcon,
+  GithubIcon,
+  GoogleIcon,
+  SpinIcon,
+} from './components/Icons.jsx';
 import { useGoogleLogin } from '@react-oauth/google';
 import apiClient from '../api/axiosInstance.js';
 
 const LoginPage = ({ onLoginSuccess }) => {
   const [error, setError] = useState(null);
-  const [email, setEmail] = useState('rahul.sharma@example.com');
-  const [password, setPassword] = useState('your_secure_password456');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);

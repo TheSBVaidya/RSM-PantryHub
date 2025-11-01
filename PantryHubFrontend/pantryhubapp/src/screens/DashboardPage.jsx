@@ -1,4 +1,4 @@
-import { LogoutIcon, UserIcon } from './Icons.jsx';
+import { LogoutIcon, UserIcon } from './components/Icons.jsx';
 
 const DashboardPage = ({ user, onLogout }) => {
   return (

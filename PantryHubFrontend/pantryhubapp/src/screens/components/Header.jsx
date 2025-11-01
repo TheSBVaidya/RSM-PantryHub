@@ -6,7 +6,7 @@ import {
   TextAlignment,
   Wishlist,
 } from './Icons.jsx';
-import logo from '../assets/logo.svg';
+import logo from '../../assets/logo.svg';
 const Header = () => {
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">

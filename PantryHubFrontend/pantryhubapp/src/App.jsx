@@ -1,6 +1,6 @@
 import LoginPage from './screens/LoginPage.jsx';
-import Header from './screens/Header.jsx';
-import Footer from './screens/Footer.jsx';
+import Header from './screens/components/Header.jsx';
+import Footer from './screens/components/Footer.jsx';
 import DashboardPage from './screens/DashboardPage.jsx';
 import { useEffect, useState } from 'react';
 import apiClient from './api/axiosInstance.js';
