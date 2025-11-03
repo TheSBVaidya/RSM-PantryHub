@@ -156,27 +156,27 @@ const Footer = () => {
           {/*Images for footer thumbnails*/}
           <div className="grid grid-cols-3 gap-2">
             <img
-              src="../../assets/img_1.png"
+              src="src/assets/img_1.png"
               alt="Thumbnail 1"
               className="rounded-md object-cover w-full h-16"
             />
             <img
-              src="../../assets/img_2.png"
+              src="src/assets/img_2.png"
               alt="Thumbnail 2"
               className="rounded-md object-cover w-full h-16"
             />
             <img
-              src="../../assets/img_3.png"
+              src="src/assets/img_3.png"
               alt="Thumbnail 3"
               className="rounded-md object-cover w-full h-16"
             />
             <img
-              src="../../assets/img_4.png"
+              src="src/assets/img_4.png"
               alt="Thumbnail 4"
               className="rounded-md object-cover w-full h-16"
             />
             <img
-              src="../../assets/img_5.png"
+              src="src/assets/img_5.png"
               alt="Thumbnail 5"
               className="rounded-md object-cover w-full h-16"
             />

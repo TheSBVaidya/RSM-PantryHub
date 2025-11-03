@@ -31,6 +31,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+//        String path = request.getServletPath();
+//        if (isPublicPath(path)) {
+//            // If it's public, skip this filter and pass the request on.
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+
         try {
             String jwt = getJwtFromRequest(request);
 
@@ -66,4 +74,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         return null;
     }
+
+//    private boolean isPublicPath(String path) {
+//        return path.equals("/api/users/register") ||
+//                path.equals("/api/auth/login") ||
+//                path.equals("/api/auth/google") ||
+//                path.startsWith("/swagger-ui") ||
+//                path.startsWith("/api-docs");
+//    }
 }

@@ -3,6 +3,7 @@ package com.pantryhub.service;
 import com.pantryhub.dto.CustomUserDetails;
 import com.pantryhub.dto.request.AddressReqDto;
 import com.pantryhub.dto.request.LoginReqDto;
+import com.pantryhub.dto.request.PhoneAndPassUpdateDto;
 import com.pantryhub.dto.request.RegisterReqDto;
 import com.pantryhub.dto.response.AddressResDto;
 import com.pantryhub.dto.response.AuthResDto;
@@ -42,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserResDto RegisterUser(RegisterReqDto registerReqDto) {
+    public AuthResDto RegisterUser(RegisterReqDto registerReqDto) {
 
         Users users = new Users();
         users.setFirstName(registerReqDto.getFirstName());
@@ -52,12 +53,17 @@ public class UserServiceImpl implements UserService {
         users.setPhone(registerReqDto.getPhone());
         users.setRole("ROLE_USER");
         users.setEmailVerified(true);
-        users.setImageUrl("not now");
-        users.setProvider("Google");
+        users.setProvider("Register");
+        users.setIsProfileComplete(true);
 
         Users savedUser = userRepository.save(users);
 
-        return maptoUserResDto(savedUser);
+        CustomUserDetails customUserDetails = new CustomUserDetails(savedUser);
+        String token = jwtTokenProvider.generateToken(customUserDetails);
+
+        String email = customUserDetails.getUsername();
+
+        return mapToAuthResDto(token, email);
     }
 
     @Override
@@ -73,6 +79,24 @@ public class UserServiceImpl implements UserService {
 
         return mapToAuthResDto(token, email);
 
+    }
+
+    @Override
+    public String updatePhoneAndPass(PhoneAndPassUpdateDto phoneAndPassUpdateDto, String email) {
+
+        Users users = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not Found"));
+
+        String passwd = phoneAndPassUpdateDto.getPassword();
+        String phone = phoneAndPassUpdateDto.getPhone();
+
+        users.setIsProfileComplete(true);
+        users.setPhone(phone);
+        users.setPassword(passwordEncoder.encode(passwd));
+
+        userRepository.save(users);
+
+        return "Password and phone updated successfully!";
     }
 
     @Override
@@ -104,9 +128,11 @@ public class UserServiceImpl implements UserService {
         userResDto.setFirstName(user.getFirstName()); // Set from User entity
         userResDto.setLastName(user.getLastName());   // Set from User entity
         userResDto.setEmail(user.getEmail());         // Use user.getEmail() or customUserDetails.getUsername()
-        userResDto.setPhone(user.getPhone());         // Set from User entity
+//        userResDto.setPhone(user.getPhone());         // Set from User entity
         userResDto.setRole(user.getRole());           // Use user.getRole() or get from authorities
-        userResDto.setCreatedAt(user.getCreatedAt()); // Set from User entity
+//        userResDto.setCreatedAt(user.getCreatedAt()); // Set from User entity
+        userResDto.setIsProfileComplete(user.getIsProfileComplete());
+        userResDto.setImg_url(user.getImageUrl());
 
         return userResDto;
 

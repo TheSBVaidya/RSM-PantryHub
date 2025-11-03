@@ -45,6 +45,9 @@ public class Users {
     @Column(name = "email_verified")
     private Boolean emailVerified;
 
+    @Column(name = "is_profile_complete", nullable = false)
+    private Boolean isProfileComplete = false;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
