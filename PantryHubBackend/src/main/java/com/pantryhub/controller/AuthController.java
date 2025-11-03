@@ -30,20 +30,6 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @Operation(summary = "Register a new User", description = "New User Making Account")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "User successfully registered"),
-            @ApiResponse(responseCode = "400", description = "Invalid input data (e.g., email already exists)")
-
-    })
-    @PostMapping("/register")
-    public ResponseEntity<UserResDto> registerUser(@RequestBody RegisterReqDto registerReqDto) {
-
-        UserResDto userResDto = userService.RegisterUser(registerReqDto);
-
-        return new ResponseEntity<>(userResDto, HttpStatus.CREATED);
-    }
-
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginReqDto loginReqDto) {
         AuthResDto authResDto = userService.LoginUser(loginReqDto);

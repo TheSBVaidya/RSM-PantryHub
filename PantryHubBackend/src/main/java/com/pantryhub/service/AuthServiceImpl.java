@@ -71,9 +71,8 @@ public class AuthServiceImpl implements AuthService {
         userResDto.setFirstName(users.getFirstName());
         userResDto.setLastName(users.getLastName());
         userResDto.setRole(users.getRole());
-        userResDto.setPhone(users.getPhone());
         userResDto.setImg_url(users.getImageUrl());
-        userResDto.setCreatedAt(users.getCreatedAt());
+        userResDto.setIsProfileComplete(users.getIsProfileComplete());
 
         AuthResDto authResDto = new AuthResDto();
         authResDto.setAccessToken(appToken);
@@ -96,10 +95,10 @@ public class AuthServiceImpl implements AuthService {
                     newUser.setProvider("GOOGLE");
                     newUser.setRole("ROLE_USER");
 
-                    String password = "GooglePassword";
-                    newUser.setPassword(passwordEncoder.encode(password));
+//                    String password = "GooglePassword";
+//                    newUser.setPassword(passwordEncoder.encode(password));
 
-                    newUser.setPhone("996746216395");
+//                    newUser.setPhone("996746216395");
 
                     return userRepository.save(newUser);
                 });

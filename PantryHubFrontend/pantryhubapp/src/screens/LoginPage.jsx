@@ -8,7 +8,7 @@ import {
 import { useGoogleLogin } from '@react-oauth/google';
 import apiClient from '../api/axiosInstance.js';
 
-const LoginPage = ({ onLoginSuccess }) => {
+const LoginPage = ({ onLoginSuccess, onNavigateToSignup }) => {
   const [error, setError] = useState(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -199,6 +199,7 @@ const LoginPage = ({ onLoginSuccess }) => {
         <p className="text-center text-xs text-gray-500 pt-4">
           Don't have an account?
           <a
+            onClick={onNavigateToSignup}
             href="#"
             className="font-medium text-blue-600 hover:text-green-700 hover:underline ml-1"
           >

@@ -14,10 +14,11 @@ public class UserResDto {
     private String firstName;
     private String lastName;
     private String email;
-    private String phone;
+//    private String phone;
     private String role;
     private String img_url;
-    private LocalDateTime createdAt;
+    private Boolean isProfileComplete;
+//    private LocalDateTime createdAt;
 
 
 }
