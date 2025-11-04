@@ -7,7 +7,7 @@ import {
   Wishlist,
 } from './Icons.jsx';
 import logo from '../../assets/logo.svg';
-const Header = () => {
+const Header = ({ user, onNavigateToAccount, onNavigateToDashboard }) => {
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="bg-gray-50 py-1 px-4 sm:px-6 lg:px-8 border-b border-gray-200 shadow-sm">
@@ -76,17 +76,19 @@ const Header = () => {
       {/* main Header */}
       <div className="container mx-auto py-4 sm:px-6 lg:px-8 flex justify-between items-center">
         {/*Logo*/}
-        <div className="flex items-center flex-shrink-0">
-          <img src={logo} alt="PantryHub Logo" className="h-10 mr-2" />
-          <div>
-            <span className="block text-3xl font-bold text-green-600 leading-none ">
-              PantryHub
-            </span>
-            <span className="block text-xs text-gray-500 leading-none">
-              A Treasure of Tastes
-            </span>
+        <a onClick={onNavigateToDashboard} className="cursor-pointer">
+          <div className="flex items-center flex-shrink-0">
+            <img src={logo} alt="PantryHub Logo" className="h-10 mr-2" />
+            <div>
+              <span className="block text-3xl font-bold text-green-600 leading-none ">
+                PantryHub
+              </span>
+              <span className="block text-xs text-gray-500 leading-none">
+                A Treasure of Tastes
+              </span>
+            </div>
           </div>
-        </div>
+        </a>
 
         {/*Search Bar*/}
         <div className="flex-grow mx-4 lg:mx-8 hidden lg:block max-w-xl">
@@ -117,8 +119,8 @@ const Header = () => {
         {/*Icons*/}
         <div className="flex items-center space-x-4 text-sm">
           <a
-            href="#"
-            className="flex items-center text-gray-600 hover:text-green-600"
+            onClick={onNavigateToAccount}
+            className="flex items-center text-gray-600 hover:text-green-600 cursor-pointer"
           >
             <Account />
             Account

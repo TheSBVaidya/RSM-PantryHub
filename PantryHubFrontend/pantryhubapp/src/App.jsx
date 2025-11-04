@@ -1,17 +1,22 @@
 import LoginPage from './screens/LoginPage.jsx';
 import Header from './screens/components/Header.jsx';
 import Footer from './screens/components/Footer.jsx';
-import DashboardPage from './screens/DashboardPage.jsx';
 import { useEffect, useState } from 'react';
 import apiClient from './api/axiosInstance.js';
 import CompleteProfilePage from './screens/CompleteProfilePage.jsx';
-import { SpinIcon } from './screens/components/Icons.jsx';
 import AddAddressPage from './screens/AddAddressPage.jsx';
+import Dashboard from './screens/DashboardPage.jsx';
+import AccountPage from './screens/AccountPage.jsx';
+import Breadcrumb from './screens/components/Breadcrumb.jsx';
 
 function App() {
   // const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [view, setView] = useState('LOGIN');
+
+  // List of views that should NOT have a Header or Footer
+  const viewsWithoutHeaderFooter = ['LOGIN', 'SIGNUP', 'COMPLETE_PROFILE']; // List of views that should NOT have a Header or Footer
+  const viewsWithoutBreadcrumb = ['LOGIN', 'SIGNUP', 'COMPLETE_PROFILE'];
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
@@ -62,6 +67,12 @@ function App() {
     setView('ADD_ADDRESS');
   };
 
+  const handleAccountUpdate = (updatedUser) => {
+    const newUser = { ...user, ...updatedUser };
+    localStorage.setItem('user', JSON.stringify(newUser));
+    setUser(newUser);
+  };
+
   const handleSignupNavigation = (userForNav, tokenForNav) => {
     handleLoginSuccess(userForNav, tokenForNav);
     setView('ADD_ADDRESS');
@@ -81,6 +92,14 @@ function App() {
     localStorage.setItem('user', JSON.stringify(user));
     setUser(user);
     setView('DASHBOARD');
+  };
+
+  const handleNavigateToDashboard = () => {
+    setView('DASHBOARD');
+  };
+
+  const handleNavigateToAccount = () => {
+    setView('ACCOUNT');
   };
 
   const renderContent = () => {
@@ -117,7 +136,16 @@ function App() {
         );
 
       case 'DASHBOARD':
-        return <DashboardPage user={user} onLogout={handleLogout} />;
+        return <Dashboard user={user} onLogout={handleLogout} />;
+
+      case 'ACCOUNT':
+        return (
+          <AccountPage
+            user={user}
+            onLogout={handleLogout}
+            onAccountUpdate={handleAccountUpdate}
+          />
+        );
 
       default:
         return (
@@ -131,11 +159,24 @@ function App() {
 
   return (
     <div>
-      <Header />
+      {!viewsWithoutHeaderFooter.includes(view) && (
+        <Header
+          onLogout={handleLogout}
+          onNavigateToAccount={handleNavigateToAccount}
+          onNavigateToDashboard={handleNavigateToDashboard}
+          user={user}
+        />
+      )}
+      {!viewsWithoutBreadcrumb.includes(view) && (
+        <Breadcrumb
+          currentView={view}
+          onNavigateToDashboard={handleNavigateToDashboard}
+        />
+      )}
       <main className="min-h-[calc(100vh-128px)] bg-gray-50">
         {renderContent()}
       </main>
-      <Footer />
+      {!viewsWithoutHeaderFooter.includes(view) && <Footer />}
     </div>
   );
 }

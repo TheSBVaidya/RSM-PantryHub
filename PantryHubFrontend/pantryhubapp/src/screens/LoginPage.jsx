@@ -10,8 +10,8 @@ import apiClient from '../api/axiosInstance.js';
 
 const LoginPage = ({ onLoginSuccess, onNavigateToSignup }) => {
   const [error, setError] = useState(null);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('sanjaybabanvaidya@gmail.com');
+  const [password, setPassword] = useState('Sanjay@180');
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
