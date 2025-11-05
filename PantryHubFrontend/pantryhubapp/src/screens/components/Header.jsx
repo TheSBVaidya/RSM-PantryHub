@@ -7,7 +7,13 @@ import {
   Wishlist,
 } from './Icons.jsx';
 import logo from '../../assets/logo.svg';
-const Header = ({ user, onNavigateToAccount, onNavigateToDashboard }) => {
+const Header = ({
+  user,
+  onNavigateToAccount,
+  onNavigateToDashboard,
+  onNavigateToCart,
+  onNavigateToWishlistpage,
+}) => {
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="bg-gray-50 py-1 px-4 sm:px-6 lg:px-8 border-b border-gray-200 shadow-sm">
@@ -127,16 +133,16 @@ const Header = ({ user, onNavigateToAccount, onNavigateToDashboard }) => {
           </a>
 
           <a
-            href="#"
-            className="flex items-center text-gray-600 hover:text-green-600"
+            onClick={onNavigateToWishlistpage}
+            className="flex items-center text-gray-600 hover:text-green-600 cursor-pointer"
           >
             <Wishlist />
             Wishlist
           </a>
 
           <a
-            href="#"
-            className="flex items-center text-gray-600 hover:text-green-600"
+            onClick={onNavigateToCart}
+            className="flex items-center text-gray-600 hover:text-green-600 cursor-pointer"
           >
             <Cart />
             Cart
