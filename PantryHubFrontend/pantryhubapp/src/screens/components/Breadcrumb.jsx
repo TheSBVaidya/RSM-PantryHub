@@ -4,6 +4,7 @@ const viewTitle = {
   ACCOUNT: 'My Account',
   ADD_ADDRESS: 'Add_Address',
   DASHBOARD: 'Home',
+  CART: 'Cart',
 };
 
 const Breadcrumb = ({ currentView, onNavigateToDashboard }) => {

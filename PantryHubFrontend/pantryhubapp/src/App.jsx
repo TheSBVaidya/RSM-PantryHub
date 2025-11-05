@@ -8,6 +8,8 @@ import AddAddressPage from './screens/AddAddressPage.jsx';
 import Dashboard from './screens/DashboardPage.jsx';
 import AccountPage from './screens/AccountPage.jsx';
 import Breadcrumb from './screens/components/Breadcrumb.jsx';
+import CartPage from './screens/CartPage.jsx';
+import WishlistPage from './screens/WishlistPage.jsx';
 
 function App() {
   // const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -102,6 +104,14 @@ function App() {
     setView('ACCOUNT');
   };
 
+  const handleNavigateToCart = () => {
+    setView('CART');
+  };
+
+  const handleNavigateToWishlist = () => {
+    setView('WISHLIST');
+  };
+
   const renderContent = () => {
     switch (view) {
       case 'LOGIN':
@@ -147,6 +157,12 @@ function App() {
           />
         );
 
+      case 'CART':
+        return <CartPage />;
+
+      case 'WISHLIST':
+        return <WishlistPage />;
+
       default:
         return (
           <LoginPage
@@ -164,6 +180,8 @@ function App() {
           onLogout={handleLogout}
           onNavigateToAccount={handleNavigateToAccount}
           onNavigateToDashboard={handleNavigateToDashboard}
+          onNavigateToCart={handleNavigateToCart}
+          onNavigateToWishlistpage={handleNavigateToWishlist}
           user={user}
         />
       )}
