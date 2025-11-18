@@ -67,11 +67,11 @@ public class AuthServiceImpl implements AuthService {
         //5. Build and return the same AuthResDto as normal login
         UserResDto userResDto = new UserResDto();
         userResDto.setId(users.getId());
-        userResDto.setEmail(users.getEmail());
+//        userResDto.setEmail(users.getEmail());
         userResDto.setFirstName(users.getFirstName());
         userResDto.setLastName(users.getLastName());
         userResDto.setRole(users.getRole());
-        userResDto.setImg_url(users.getImageUrl());
+//        userResDto.setImg_url(users.getImageUrl());
         userResDto.setIsProfileComplete(users.getIsProfileComplete());
 
         AuthResDto authResDto = new AuthResDto();

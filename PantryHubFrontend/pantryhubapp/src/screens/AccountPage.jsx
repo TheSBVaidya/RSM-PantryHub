@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import {
-  FiUser,
-  FiUpload,
-  FiMapPin,
-  FiShoppingBag,
-  FiLogOut,
-  FiCamera,
-} from 'react-icons/fi';
-import ProfileSettings from './components/AccountComponents/ProfileSettings.jsx';
+import { FiUser, FiMapPin, FiShoppingBag, FiLogOut } from 'react-icons/fi';
+import Profile from './components/AccountComponents/Profile.jsx';
+import Address from './components/AccountComponents/Address.jsx';
 
 // This component renders the correct content based on the active tab
-const AccountPage = ({ user, onAccountUpdate, onLogout }) => {
+const AccountPage = ({
+  user,
+  onAccountUpdate,
+  onNavigateToAddAddress,
+  onLogout,
+  onNavigateToEditAddress,
+}) => {
   const [activeTab, setActiveTab] = useState('profile');
 
   const getTabClassName = (tabName) =>
@@ -23,9 +23,7 @@ const AccountPage = ({ user, onAccountUpdate, onLogout }) => {
   const renderContent = () => {
     switch (activeTab) {
       case 'profile':
-        return (
-          <ProfileSettings user={user} onAccountUpdate={onAccountUpdate} />
-        );
+        return <Profile onAccountUpdate={onAccountUpdate} />;
       case 'orders':
         return (
           <div className="bg-white p-6 rounded-lg shadow-md">
@@ -35,17 +33,13 @@ const AccountPage = ({ user, onAccountUpdate, onLogout }) => {
         );
       case 'address':
         return (
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold text-gray-800">
-              My Addresses
-            </h2>
-            <p className="text-gray-600 mt-4">You have no saved addresses.</p>
-          </div>
+          <Address
+            onNavigateToAddAddress={onNavigateToAddAddress}
+            onNavigateToEditAddress={onNavigateToEditAddress}
+          />
         );
       default:
-        return (
-          <ProfileSettings user={user} onAccountUpdate={onAccountUpdate} />
-        );
+        return <Profile onAccountUpdate={onAccountUpdate} />;
     }
   };
 

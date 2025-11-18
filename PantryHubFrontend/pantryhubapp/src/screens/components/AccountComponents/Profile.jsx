@@ -19,9 +19,7 @@ const Profile = ({ onAccountUpdate }) => {
 
   const fetchUserData = async () => {
     try {
-      const response = await apiClient.get('/users/me', {
-        withCredentials: true,
-      });
+      const response = await apiClient.get('/users/me');
       // console.log(response.data);
       setFormData(response.data);
     } catch (error) {

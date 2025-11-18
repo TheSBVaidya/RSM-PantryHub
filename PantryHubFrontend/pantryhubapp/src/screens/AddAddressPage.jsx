@@ -1,5 +1,5 @@
 import apiClient from '../api/axiosInstance.js';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SpinIcon } from './components/Icons.jsx';
 
 const FormField = ({
@@ -85,19 +85,41 @@ const stateOptions = [
   { value: 'CA', label: 'California' },
 ];
 
-const AddAddressPage = ({ onAddressAdded }) => {
-  const [addressData, setAddressData] = useState({
-    addressLine1: 'Room- 203, Sadguru Apartment, Near Dyandeep School',
-    addressLine2: 'Karave Gaon, Sector - 36,',
-    city: 'Navi Mumbai',
-    state: '',
-    country: '',
-    zipCode: '400706',
-    landmark: 'Ganesh Talav',
-    addressType: '',
-  });
+const intitalAddressData = {
+  addressLine1: '',
+  addressLine2: '',
+  city: '',
+  state: '',
+  country: '',
+  zipCode: '',
+  landmark: '',
+  addressType: '',
+};
+
+const AddAddressPage = ({ onAddressAdded, addressToEdit }) => {
+  const [addressData, setAddressData] = useState(intitalAddressData);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  useEffect(() => {
+    if (addressToEdit) {
+      setIsEditMode(true);
+      setAddressData({
+        addressLine1: addressToEdit.addressLine1 || '',
+        addressLine2: addressToEdit.addressLine2 || '',
+        city: addressToEdit.city || '',
+        state: addressToEdit.state || '',
+        zipCode: addressToEdit.zipCode || '',
+        country: addressToEdit.country || '',
+        landmark: addressToEdit.landmark || '',
+        addressType: addressToEdit.addressType || 'HOME',
+      });
+    } else {
+      setIsEditMode(false);
+      setAddressData(intitalAddressData);
+    }
+  }, [addressToEdit]);
 
   const handleAddressChange = (e) => {
     const { name, value } = e.target;
@@ -113,12 +135,16 @@ const AddAddressPage = ({ onAddressAdded }) => {
     setIsLoading(true);
 
     try {
-      // This call is now authenticated because the token was set
-      // in the previous step (in CompleteProfilePage's submit)
-      await apiClient.post('/users/addAddress', addressData);
-
-      // Notify App.jsx that we are 100% complete
-      onAddressAdded();
+      if (isEditMode) {
+        await apiClient.put(
+          `/users/updateAddress/${addressToEdit.id}`,
+          addressData
+        );
+        onAddressAdded();
+      } else {
+        await apiClient.post('/users/addAddress', addressData);
+        onAddressAdded();
+      }
     } catch (error) {
       console.error('Add address error:', error);
       const message =

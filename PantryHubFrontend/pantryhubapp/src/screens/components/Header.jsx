@@ -104,15 +104,15 @@ const Header = ({
               placeholder="Search for items...."
               className="px-4 py-2 w-full text-sm focus:outline-none focus:right-1 focus:ring-green-500"
             />
-            <select
-              className="px-3 py-2 bg-gray-50 border-l border-gray-300 text-sm text-gray-600 focus:outline-none appearance-none pr-8 bg-no-repeat bg-right"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd' /%3E%3C/svg%3E")`,
-              }}
-            >
-              <option>All Categories</option>
-              {/* Add categories */}
-            </select>
+            {/*<select*/}
+            {/*  className="px-3 py-2 bg-gray-50 border-l border-gray-300 text-sm text-gray-600 focus:outline-none appearance-none pr-8 bg-no-repeat bg-right"*/}
+            {/*  style={{*/}
+            {/*    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd' /%3E%3C/svg%3E")`,*/}
+            {/*  }}*/}
+            {/*>*/}
+            {/*  <option>All Categories</option>*/}
+            {/*  /!* Add categories *!/*/}
+            {/*</select>*/}
             <button
               type="submit"
               className="bg-red-500 hover:bg-red-600 text-white px-4 py-2"
