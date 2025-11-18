@@ -3,6 +3,7 @@ package com.pantryhub.controller;
 import com.pantryhub.dto.request.AddressReqDto;
 import com.pantryhub.dto.request.PhoneAndPassUpdateDto;
 import com.pantryhub.dto.request.RegisterReqDto;
+import com.pantryhub.dto.request.UpdateUserReqDto;
 import com.pantryhub.dto.response.AddressResDto;
 import com.pantryhub.dto.response.AuthResDto;
 import com.pantryhub.dto.response.CurrentUserResDto;
@@ -70,5 +71,11 @@ public class UserController {
     public ResponseEntity<?> updateAddress(@PathVariable Long id, @RequestBody AddressReqDto addressReqDto, Authentication authentication) throws AccessDeniedException {
         AddressResDto addressResDto = userService.updateAddress(id, addressReqDto, authentication);
         return ResponseEntity.ok(addressResDto);
+    }
+
+    @PatchMapping("/updateProfile")
+    public ResponseEntity<AuthResDto> updateProfile(@RequestBody UpdateUserReqDto updateUserReqDto, Authentication authentication) {
+        AuthResDto authResDto = userService.updateProfile(updateUserReqDto, authentication);
+        return ResponseEntity.ok(authResDto);
     }
 }
