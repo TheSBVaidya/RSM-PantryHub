@@ -7,6 +7,7 @@ import com.pantryhub.dto.request.PhoneAndPassUpdateDto;
 import com.pantryhub.dto.request.RegisterReqDto;
 import com.pantryhub.dto.response.AddressResDto;
 import com.pantryhub.dto.response.AuthResDto;
+import com.pantryhub.dto.response.CurrentUserResDto;
 import com.pantryhub.dto.response.UserResDto;
 import com.pantryhub.entity.Address;
 import com.pantryhub.entity.Users;
@@ -19,9 +20,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.nio.file.AccessDeniedException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -84,8 +90,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String updatePhoneAndPass(PhoneAndPassUpdateDto phoneAndPassUpdateDto, String email) {
 
-        Users users = userRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("User not Found"));
+        Users users = findUserByEmail(email);
 
         String passwd = phoneAndPassUpdateDto.getPassword();
         String phone = phoneAndPassUpdateDto.getPhone();
@@ -102,9 +107,93 @@ public class UserServiceImpl implements UserService {
     @Override
     public AddressResDto addAddress(AddressReqDto addressReqDto, String email) {
 
-        Users users = userRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+        Users users = findUserByEmail(email);
 
+        Address newAddress = mapToAddress(addressReqDto);
+
+        Address savedAddress = addressRepository.save(newAddress);
+
+        return mapToAddressResDto(savedAddress);
+    }
+
+    @Override
+    public CurrentUserResDto getCurrentUser(Authentication authentication) {
+        String email = authentication.getName();
+
+        Users users = findUserByEmail(email);
+
+        CurrentUserResDto currentUserResDto = new CurrentUserResDto();
+        currentUserResDto.setEmail(users.getEmail());
+        currentUserResDto.setFirstName(users.getFirstName());
+        currentUserResDto.setLastName(users.getLastName());
+        currentUserResDto.setId(users.getId());
+//        currentUserResDto.setPassword(users.getPassword());
+        currentUserResDto.setPhone(users.getPhone());
+        currentUserResDto.setImg_url(users.getImageUrl());
+
+        return currentUserResDto;
+    }
+
+    @Override
+    public List<AddressResDto> getCurrentUserAddress(Authentication authentication) {
+
+        String email = authentication.getName();
+
+        Users users = findUserByEmail(email);
+
+        List<Address> addresses = addressRepository.findByUsers(users);
+
+        return addresses.stream().map(this::mapToAddressResDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteAddress(Long id, Authentication authentication) throws AccessDeniedException {
+
+        // check user
+        String email = authentication.getName();
+        Users users = findUserByEmail(email);
+
+        //find address
+        Address address = addressRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Address not found with id: " + id));
+
+        // security check
+        if (!address.getUsers().getId().equals(users.getId())) {
+            throw new AccessDeniedException("You do not have permission to delete this address.");
+        }
+
+        // perform the delete
+        addressRepository.deleteById(id);
+    }
+
+    @Override
+    public AddressResDto updateAddress(Long id, AddressReqDto addressReqDto, Authentication authentication) throws AccessDeniedException {
+
+        String email = authentication.getName();
+        Users users = findUserByEmail(email);
+
+        Address address = addressRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Address not found with id: " + id));
+
+        if (!address.getUsers().getId().equals(users.getId())) {
+            throw new AccessDeniedException("You do not have permission to delete this address.");
+        }
+
+        address.setAddressLine1(addressReqDto.getAddressLine1());
+        address.setAddressLine2(addressReqDto.getAddressLine2());
+        address.setAddressType(addressReqDto.getAddressType());
+        address.setCity(addressReqDto.getCity());
+        address.setCountry(addressReqDto.getCountry());
+        address.setLandmark(addressReqDto.getLandmark());
+        address.setState(addressReqDto.getState());
+        address.setZipCode(addressReqDto.getZipCode());
+
+        Address updatedAddress = addressRepository.save(address);
+
+        return mapToAddressResDto(updatedAddress);
+    }
+
+    private Address mapToAddress(AddressReqDto addressReqDto) {
         Address newAddress = new Address();
         newAddress.setAddressLine1(addressReqDto.getAddressLine1());
         newAddress.setAddressLine2(addressReqDto.getAddressLine2());
@@ -115,11 +204,12 @@ public class UserServiceImpl implements UserService {
         newAddress.setState(addressReqDto.getState());
         newAddress.setZipCode(addressReqDto.getZipCode());
 
-        newAddress.setUsers(users);
+        return newAddress;
+    }
 
-        Address savedAddress = addressRepository.save(newAddress);
-
-        return mapToAddressResDto(savedAddress);
+    private Users findUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
     }
 
     private UserResDto maptoUserResDto(Users user) {
@@ -127,12 +217,12 @@ public class UserServiceImpl implements UserService {
         userResDto.setId(user.getId()); // Use user.getId() or customUserDetails.getId()
         userResDto.setFirstName(user.getFirstName()); // Set from User entity
         userResDto.setLastName(user.getLastName());   // Set from User entity
-        userResDto.setEmail(user.getEmail());         // Use user.getEmail() or customUserDetails.getUsername()
+//        userResDto.setEmail(user.getEmail());         // Use user.getEmail() or customUserDetails.getUsername()
 //        userResDto.setPhone(user.getPhone());         // Set from User entity
         userResDto.setRole(user.getRole());           // Use user.getRole() or get from authorities
 //        userResDto.setCreatedAt(user.getCreatedAt()); // Set from User entity
         userResDto.setIsProfileComplete(user.getIsProfileComplete());
-        userResDto.setImg_url(user.getImageUrl());
+//        userResDto.setImg_url(user.getImageUrl());
 
         return userResDto;
 

@@ -1,16 +1,33 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FiCamera, FiUser } from 'react-icons/fi';
+import apiClient from '../../../api/axiosInstance.js';
 
-const ProfileSettings = ({ user, onAccountUpdate }) => {
+const Profile = ({ onAccountUpdate }) => {
   const [formData, setFormData] = useState({
-    firstName: user.firstName || '',
-    lastName: user.lastName || '',
-    phone: user.phone || '',
+    firstName: '',
+    lastName: '',
+    phone: '',
+    email: '',
+    img_url: '',
   });
   const [profileImage, setProfileImage] = useState(null);
-  const [previewImage, setPreviewImage] = useState(
-    user.profileImageUrl || null
-  );
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const fetchUserData = async () => {
+    try {
+      const response = await apiClient.get('/users/me');
+      // console.log(response.data);
+      setFormData(response.data);
+    } catch (error) {
+      console.error('Error fetching user:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,8 +37,8 @@ const ProfileSettings = ({ user, onAccountUpdate }) => {
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      setProfileImage(file);
-      setPreviewImage(URL.createObjectURL(file));
+      // setProfileImage(file);
+      // setPreviewImage(URL.createObjectURL(file));
     }
   };
 
@@ -34,18 +51,20 @@ const ProfileSettings = ({ user, onAccountUpdate }) => {
     alert('Profile Updated! (Image upload simulated)');
   };
 
+  if (loading) return <p>Loading Profile...</p>;
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-6 text-gray-800">
-        Profile Settings
-      </h2>
+      {/*<h2 className="text-2xl font-semibold mb-6 text-gray-800">*/}
+      {/*  Profile Settings*/}
+      {/*</h2>*/}
 
       {/* --- Profile Image Section --- */}
       <div className="flex flex-col sm:flex-row items-center gap-6 mb-8">
         <div className="relative">
-          {previewImage ? (
+          {formData.img_url ? (
             <img
-              src={previewImage}
+              src={formData.img_url}
               alt="Profile"
               className="w-24 h-24 rounded-full object-cover border-4 border-gray-200"
             />
@@ -70,9 +89,9 @@ const ProfileSettings = ({ user, onAccountUpdate }) => {
         </div>
         <div>
           <h3 className="text-xl font-semibold text-gray-800">
-            {user.firstName} {user.lastName}
+            {formData.firstName} {formData.lastName}
           </h3>
-          <p className="text-gray-500">{user.email}</p>
+          <p className="text-gray-500">{formData.email}</p>
         </div>
       </div>
 
@@ -123,11 +142,27 @@ const ProfileSettings = ({ user, onAccountUpdate }) => {
             type="email"
             name="email"
             id="email"
-            value={user.email}
+            value={formData.email}
             disabled
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 text-gray-500 cursor-not-allowed"
           />
         </div>
+        {/*<div>*/}
+        {/*  <label*/}
+        {/*    htmlFor="password"*/}
+        {/*    className="block text-sm font-medium text-gray-700"*/}
+        {/*  >*/}
+        {/*    Password*/}
+        {/*  </label>*/}
+        {/*  <input*/}
+        {/*    type="password"*/}
+        {/*    name="password"*/}
+        {/*    id="password"*/}
+        {/*    value={user.password}*/}
+        {/*    disabled*/}
+        {/*    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 text-gray-500 cursor-not-allowed"*/}
+        {/*  />*/}
+        {/*</div>*/}
         <div>
           <label
             htmlFor="phone"
@@ -141,15 +176,16 @@ const ProfileSettings = ({ user, onAccountUpdate }) => {
             id="phone"
             value={formData.phone}
             onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+            disabled
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 text-gray-500 cursor-not-allowed"
           />
         </div>
         <div className="flex justify-end pt-4">
           <button
             type="submit"
-            className="bg-green-600 text-white font-bold py-2 px-6 rounded-md hover:bg-green-700 transition-colors"
+            className="bg-red-500 text-white font-bold py-2 px-6 rounded-md hover:bg-green-700 transition-colors"
           >
-            Save Changes
+            Update Profile
           </button>
         </div>
       </form>
@@ -157,4 +193,4 @@ const ProfileSettings = ({ user, onAccountUpdate }) => {
   );
 };
 
-export default ProfileSettings;
+export default Profile;

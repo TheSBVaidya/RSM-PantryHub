@@ -15,6 +15,7 @@ function App() {
   // const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [view, setView] = useState('LOGIN');
+  const [addressEdit, setAddressEdit] = useState(null);
 
   // List of views that should NOT have a Header or Footer
   const viewsWithoutHeaderFooter = ['LOGIN', 'SIGNUP', 'COMPLETE_PROFILE']; // List of views that should NOT have a Header or Footer
@@ -64,7 +65,8 @@ function App() {
   };
 
   const handleProfileUpdate = (updatedUser) => {
-    localStorage.setItem('user', JSON.stringify(updatedUser));
+    const newUser = { ...user, ...updatedUser };
+    localStorage.setItem('user', JSON.stringify(newUser));
     setUser(updatedUser);
     setView('ADD_ADDRESS');
   };
@@ -73,6 +75,7 @@ function App() {
     const newUser = { ...user, ...updatedUser };
     localStorage.setItem('user', JSON.stringify(newUser));
     setUser(newUser);
+    // setView('ADD_ADDRESS');
   };
 
   const handleSignupNavigation = (userForNav, tokenForNav) => {
@@ -91,9 +94,13 @@ function App() {
   };
 
   const handleAddressAdded = () => {
-    localStorage.setItem('user', JSON.stringify(user));
-    setUser(user);
-    setView('DASHBOARD');
+    setAddressEdit(null);
+
+    if (view == 'ADD_ADDRESS' && !user.isProfileComplete) {
+      setView('DASHBOARD');
+    } else {
+      setView('ACCOUNT');
+    }
   };
 
   const handleNavigateToDashboard = () => {
@@ -110,6 +117,16 @@ function App() {
 
   const handleNavigateToWishlist = () => {
     setView('WISHLIST');
+  };
+
+  const handleNavigateToAddAddress = () => {
+    // setAddressEdit(null);
+    setView('ADD_ADDRESS');
+  };
+
+  const handleNavigateToEditAddress = (address) => {
+    setAddressEdit(address);
+    setView('ADD_ADDRESS');
   };
 
   const renderContent = () => {
@@ -141,7 +158,9 @@ function App() {
       case 'ADD_ADDRESS':
         return (
           <AddAddressPage
-            onAddressAdded={handleAddressAdded} // <-- New handler
+            user={user}
+            onAddressAdded={handleAddressAdded}
+            addressToEdit={addressEdit} // <-- New handler
           />
         );
 
@@ -154,6 +173,8 @@ function App() {
             user={user}
             onLogout={handleLogout}
             onAccountUpdate={handleAccountUpdate}
+            onNavigateToAddAddress={handleNavigateToAddAddress}
+            onNavigateToEditAddress={handleNavigateToEditAddress}
           />
         );
 
