@@ -11,9 +11,11 @@ import com.pantryhub.dto.response.UserResDto;
 import com.pantryhub.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
@@ -77,5 +79,16 @@ public class UserController {
     public ResponseEntity<AuthResDto> updateProfile(@RequestBody UpdateUserReqDto updateUserReqDto, Authentication authentication) {
         AuthResDto authResDto = userService.updateProfile(updateUserReqDto, authentication);
         return ResponseEntity.ok(authResDto);
+    }
+
+    @PostMapping(value = "/profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<UserResDto> uploadProfileImage(@RequestParam("image")MultipartFile file,  Authentication authentication) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        UserResDto userResDto = userService.uploadProfileImage(file, authentication);
+
+        return ResponseEntity.ok(userResDto);
     }
 }
