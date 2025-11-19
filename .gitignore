@@ -30,7 +30,7 @@ Desktop.ini
 
 # Local properties (contains secrets)
 **/src/main/resources/application.properties
-
+**/src/main/resources/serviceAccountKey.json
 # =========================
 # Node / React Frontend
 # =========================
