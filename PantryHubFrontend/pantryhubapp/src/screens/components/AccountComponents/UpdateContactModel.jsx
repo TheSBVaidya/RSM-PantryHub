@@ -1,6 +1,7 @@
 import { FiX } from 'react-icons/fi';
 import { useRef, useState } from 'react';
 import apiClient from '../../../api/axiosInstance.js';
+import { toast } from 'sonner';
 
 const UpdateContactModel = ({ field, currentValue, onClose, onUpdate }) => {
   const [step, setStep] = useState(1);
@@ -45,23 +46,34 @@ const UpdateContactModel = ({ field, currentValue, onClose, onUpdate }) => {
 
   //update new value
   const handleUpdateValue = () => {
-    if (!newValue) return alert(`Please enter a valid ${label}`);
+    if (!newValue) return toast.info(`Please enter a valid ${label}`);
     setLoading(true);
     // APi call for update profile
+    const payload = { [field]: newValue };
+
+    const updateValuePromise = apiClient
+      .patch('/users/updateProfile', payload)
+      .then((response) => {
+        const { accessToken, userResDto } = response.data;
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('user', JSON.stringify(userResDto));
+        onUpdate(field, newValue);
+        onClose();
+      });
+
     setTimeout(async () => {
       setLoading(false);
 
       try {
-        // console.log('Field: ', field);
-        const payload = { [field]: newValue };
-        const response = await apiClient.patch('/users/updateProfile', payload);
-
-        localStorage.setItem('accessToken', response.data.accessToken);
-        localStorage.setItem('user', JSON.stringify(response.data.userResDto));
-        onUpdate(field, newValue);
-        onClose();
+        await toast.promise(updateValuePromise, {
+          loading: 'Updating...',
+          success: `${field} is updated...`,
+          error: (err) => {
+            return err?.response?.data?.message || 'Something went wrong!';
+          },
+        });
       } catch (error) {
-        alert('Something went wrong' + error);
+        toast.error('Something went wrong! ', error);
       } finally {
         setLoading(false);
       }

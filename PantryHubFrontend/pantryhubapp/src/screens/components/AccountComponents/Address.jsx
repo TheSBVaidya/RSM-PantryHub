@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import apiClient from '../../../api/axiosInstance.js';
+import { toast } from 'sonner';
 
 const Address = ({ onNavigateToAddAddress, onNavigateToEditAddress }) => {
   const [addressess, setAddressess] = useState([]);
@@ -21,14 +22,30 @@ const Address = ({ onNavigateToAddAddress, onNavigateToEditAddress }) => {
     }
   };
 
-  const handleAddressDelete = async (id) => {
-    try {
-      await apiClient.delete(`/users/deleteAddress/${id}`);
-      setAddressess((prev) => prev.filter((a) => a.id != id));
-      alert('Address Successfully Deleted...');
-    } catch (error) {
-      console.log(error);
-    }
+  const handleAddressDelete = (id) => {
+    toast.warning('Are you sure?', {
+      description: 'Do you really want to delete this address?',
+      action: {
+        label: 'Yes, Delete',
+        onClick: async () => {
+          try {
+            await apiClient.delete(`/users/deleteAddress/${id}`);
+            setAddressess((prev) => prev.filter((a) => a.id != id));
+            // alert('Address Successfully Deleted...');
+            toast.success('Address Successfully Deleted...');
+          } catch (error) {
+            // console.log(error);
+            toast.error('Failed to delete address!', error);
+          }
+        },
+      },
+      cancel: {
+        label: 'Cancel',
+        onClick: () => {
+          toast.info('Deletion Cancelled');
+        },
+      },
+    });
   };
 
   return (

@@ -1,6 +1,7 @@
 import apiClient from '../api/axiosInstance.js';
 import { useEffect, useState } from 'react';
 import { SpinIcon } from './components/Icons.jsx';
+import { toast } from 'sonner';
 
 const FormField = ({
   id,
@@ -140,9 +141,11 @@ const AddAddressPage = ({ onAddressAdded, addressToEdit }) => {
           `/users/updateAddress/${addressToEdit.id}`,
           addressData
         );
+        toast.success('Address is Updated...!');
         onAddressAdded();
       } else {
         await apiClient.post('/users/addAddress', addressData);
+        toast.success('Address is Added...');
         onAddressAdded();
       }
     } catch (error) {
@@ -151,6 +154,7 @@ const AddAddressPage = ({ onAddressAdded, addressToEdit }) => {
         error.response?.data?.message ||
         error.message ||
         'An unknown error occurred.';
+      toast.error(message);
       setError(message);
     } finally {
       setIsLoading(false);

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { FiCamera, FiUser } from 'react-icons/fi';
 import apiClient from '../../../api/axiosInstance.js';
 import UpdateContactModel from './UpdateContactModel.jsx';
+import { toast } from 'sonner';
 
 const Profile = ({ onAccountUpdate }) => {
   const [formData, setFormData] = useState({
@@ -52,7 +53,8 @@ const Profile = ({ onAccountUpdate }) => {
 
     try {
       await apiClient.patch('/users/updateProfile', payload);
-      alert('Name is Updated');
+      // alert('Name is Updated');
+      toast.success('Updated...!');
       setInitialNames({
         firstName: formData.firstName,
         lastName: formData.lastName,
@@ -95,12 +97,16 @@ const Profile = ({ onAccountUpdate }) => {
     // and get back a URL. For now, we just update the text fields.
     onAccountUpdate(formData);
     // You would also send the `profileImage` file to your API
-    alert('Profile Updated! (Image upload simulated)');
+    toast.success('Profile Updated! (Image upload simulated)');
+    // alert('Profile Updated! (Image upload simulated)');
   };
 
   const handleModelUpdate = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    alert(`${field === 'email' ? 'Email' : 'Phone'} updated successfully!`);
+    // toast.success(
+    //   `${field === 'email' ? 'Email' : 'Phone'} updated successfully!`
+    // );
+    // alert(`${field === 'email' ? 'Email' : 'Phone'} updated successfully!`);
   };
 
   const openModel = (field) => {

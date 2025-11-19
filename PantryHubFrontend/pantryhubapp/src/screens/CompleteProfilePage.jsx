@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { SpinIcon } from './components/Icons.jsx';
 import apiClient from '../api/axiosInstance.js';
+import { toast } from 'sonner';
 
 const FormField = ({
   id,
@@ -44,12 +45,12 @@ const CompleteProfilePage = ({
   const isUpdateMode = !!user; //if user data passed we are in update mode
 
   const [formData, setFormData] = useState({
-    firstName: 'megha',
-    lastName: 'vaidya',
-    email: 'meghavaidya@gmail.com',
-    phone: '9967462163',
-    password: 'Sanjay@180',
-    confirmPassword: 'Sanjay@180',
+    firstName: '',
+    lastName: '',
+    email: '.',
+    phone: '',
+    password: '',
+    confirmPassword: '',
   });
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -79,6 +80,7 @@ const CompleteProfilePage = ({
 
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match.');
+      toast.error('Passwords do not match.');
       return;
     }
     setIsLoading(true);
@@ -89,11 +91,12 @@ const CompleteProfilePage = ({
       if (isUpdateMode) {
         // means user comes from login to complete the profile
 
-        await apiClient.put('/users/update-phone-pass', {
+        await apiClient.patch('/users/updateProfile', {
           phone: formData.phone,
           password: formData.password,
         });
 
+        toast.success('Successfully updated!');
         onProfileComplete(user);
       } else {
         const payload = { ...formData };
@@ -104,16 +107,19 @@ const CompleteProfilePage = ({
         const response = await apiClient.post('/users/register', payload);
         console.log(response.data);
 
+        toast.success('Register Successfully!');
+
         const userForNav = response.data.userResDto;
         const tokenForNav = response.data.accessToken;
         onProfileComplete(userForNav, tokenForNav);
       }
     } catch (error) {
-      console.error('Profile completion error:', error);
+      // console.error('Profile completion error:', error);
       const message =
         error.response?.data?.message ||
         error.message ||
         'An unknown error occurred.';
+      toast.error(message);
       setError(message);
     } finally {
       setIsLoading(false);
