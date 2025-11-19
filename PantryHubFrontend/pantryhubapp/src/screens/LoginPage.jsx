@@ -7,6 +7,7 @@ import {
 } from './components/Icons.jsx';
 import { useGoogleLogin } from '@react-oauth/google';
 import apiClient from '../api/axiosInstance.js';
+import { toast } from 'sonner';
 
 const LoginPage = ({ onLoginSuccess, onNavigateToSignup }) => {
   const [error, setError] = useState(null);
@@ -21,12 +22,27 @@ const LoginPage = ({ onLoginSuccess, onNavigateToSignup }) => {
     setError(null);
     setIsLoading(true);
 
+    const loginPromise = apiClient
+      .post('/auth/login', { email, password })
+      .then((response) => {
+        const { accessToken, userResDto } = response.data;
+        onLoginSuccess(userResDto, accessToken);
+        return response;
+      });
+
     try {
-      const response = await apiClient.post('/auth/login', { email, password });
-      const { accessToken, userResDto } = response.data;
-      onLoginSuccess(userResDto, accessToken);
-    } catch (error) {
-      console.log(error);
+      await toast.promise(loginPromise, {
+        loading: 'Signing you in...',
+        success: 'Welcome back!',
+        error: (err) => {
+          const msg =
+            err?.response?.data?.message ||
+            'Invalid email or password, please try again.';
+          return msg;
+        },
+      });
+    } catch (err) {
+      // console.log(error);
       setError('Invalid email or password. Please try again.');
     } finally {
       setIsLoading(false);
@@ -39,17 +55,24 @@ const LoginPage = ({ onLoginSuccess, onNavigateToSignup }) => {
       setIsGoogleLoading(true);
       setError(null);
 
-      try {
-        const response = await apiClient.post('/auth/google', {
+      const googlePromise = apiClient
+        .post('/auth/google', {
           code: codeResponse.code,
+        })
+        .then((response) => {
+          const { accessToken, userResDto } = response.data;
+          onLoginSuccess(userResDto, accessToken);
+          return response;
         });
 
-        // console.log('USER: ' + response.data.userResDto);
-
-        const { accessToken, userResDto } = response.data;
-        onLoginSuccess(userResDto, accessToken);
+      try {
+        await toast.promise(googlePromise, {
+          loading: 'Signing in with Google...',
+          success: 'Logged in with Google',
+          error: 'Google login failed. Please try again.',
+        });
       } catch (err) {
-        console.error('Failed to login with Google:', err);
+        // console.error('Failed to login with Google:', err);
         setError('Google login failed. Please try again.');
       } finally {
         setIsGoogleLoading(false);

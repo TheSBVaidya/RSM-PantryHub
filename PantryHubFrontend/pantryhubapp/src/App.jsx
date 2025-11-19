@@ -10,6 +10,7 @@ import AccountPage from './screens/AccountPage.jsx';
 import Breadcrumb from './screens/components/Breadcrumb.jsx';
 import CartPage from './screens/CartPage.jsx';
 import WishlistPage from './screens/WishlistPage.jsx';
+import { Toaster } from 'sonner';
 
 function App() {
   // const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -196,6 +197,8 @@ function App() {
 
   return (
     <div>
+      <Toaster richColors closeButton position="top-right" />
+
       {!viewsWithoutHeaderFooter.includes(view) && (
         <Header
           onLogout={handleLogout}
