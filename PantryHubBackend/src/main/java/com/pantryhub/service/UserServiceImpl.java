@@ -21,7 +21,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +45,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private FirebaseStorageService firebaseStorageService;
 
 
     @Override
@@ -240,6 +245,23 @@ public class UserServiceImpl implements UserService {
 
 
         return mapToAuthResDto(newToken, newUser.getEmail());
+    }
+
+    @Override
+    public UserResDto uploadProfileImage(MultipartFile file, Authentication authentication) {
+        Users users = findUserByEmail(authentication.getName());
+
+        try{
+            String imageUrl = firebaseStorageService.uploadFile(file);
+
+            users.setImageUrl(imageUrl);
+            Users updatedUser = userRepository.save(users);
+
+            return maptoUserResDto(users);
+        } catch (IOException e){
+            throw new RuntimeException("Failed to upload image" + e);
+        }
+
     }
 
     private Address mapToAddress(AddressReqDto addressReqDto) {

@@ -9,6 +9,7 @@ import com.pantryhub.entity.Address;
 import com.pantryhub.entity.Users;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
@@ -27,6 +28,8 @@ public interface UserService {
     void deleteAddress(Long id, Authentication authentication) throws AccessDeniedException;
     AddressResDto updateAddress(Long id, AddressReqDto addressReqDto, Authentication authentication) throws AccessDeniedException;
     AuthResDto updateProfile(UpdateUserReqDto updateUserReqDto, Authentication authentication);
+
+    UserResDto uploadProfileImage(MultipartFile file,  Authentication authentication);
 
 
 }

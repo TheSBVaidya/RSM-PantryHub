@@ -12,7 +12,7 @@ const Profile = ({ onAccountUpdate }) => {
     email: '',
     img_url: '',
   });
-  // const [profileImage, setProfileImage] = useState(null);
+  const [profileImage, setProfileImage] = useState(null);
   const [loading, setLoading] = useState(true);
   const [modelOpen, setModelOpen] = useState(false);
   const [editingField, setEditingField] = useState(null);
@@ -83,9 +83,37 @@ const Profile = ({ onAccountUpdate }) => {
     });
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
+      const image = e.target.files[0];
+
+      const imageChangePromise = apiClient
+        .post(
+          '/users/profile-image',
+          { image },
+          {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          }
+        )
+        .then((res) => {
+          fetchUserData();
+        });
+
+      try {
+        setLoading(true);
+        await toast.promise(imageChangePromise, {
+          loading: 'Image is Updating',
+          success: 'Profile Image Updated successfully!',
+          error: (err) => {
+            return err?.response?.data?.message || 'Something went wrong!';
+          },
+        });
+      } catch (err) {
+        toast.error('Something went wrong! ', err);
+      } finally {
+        setLoading(false);
+      }
+
       // setProfileImage(file);
       // setPreviewImage(URL.createObjectURL(file));
     }
