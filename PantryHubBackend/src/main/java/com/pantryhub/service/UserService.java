@@ -1,14 +1,12 @@
 package com.pantryhub.service;
 
-import com.pantryhub.dto.request.AddressReqDto;
-import com.pantryhub.dto.request.LoginReqDto;
-import com.pantryhub.dto.request.PhoneAndPassUpdateDto;
-import com.pantryhub.dto.request.RegisterReqDto;
+import com.pantryhub.dto.request.*;
 import com.pantryhub.dto.response.AddressResDto;
 import com.pantryhub.dto.response.AuthResDto;
 import com.pantryhub.dto.response.CurrentUserResDto;
 import com.pantryhub.dto.response.UserResDto;
 import com.pantryhub.entity.Address;
+import com.pantryhub.entity.Users;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -28,5 +26,7 @@ public interface UserService {
     List<AddressResDto> getCurrentUserAddress(Authentication authentication);
     void deleteAddress(Long id, Authentication authentication) throws AccessDeniedException;
     AddressResDto updateAddress(Long id, AddressReqDto addressReqDto, Authentication authentication) throws AccessDeniedException;
+    AuthResDto updateProfile(UpdateUserReqDto updateUserReqDto, Authentication authentication);
+
 
 }

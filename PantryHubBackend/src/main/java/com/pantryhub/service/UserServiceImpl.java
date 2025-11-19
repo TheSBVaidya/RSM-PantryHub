@@ -1,10 +1,7 @@
 package com.pantryhub.service;
 
 import com.pantryhub.dto.CustomUserDetails;
-import com.pantryhub.dto.request.AddressReqDto;
-import com.pantryhub.dto.request.LoginReqDto;
-import com.pantryhub.dto.request.PhoneAndPassUpdateDto;
-import com.pantryhub.dto.request.RegisterReqDto;
+import com.pantryhub.dto.request.*;
 import com.pantryhub.dto.response.AddressResDto;
 import com.pantryhub.dto.response.AuthResDto;
 import com.pantryhub.dto.response.CurrentUserResDto;
@@ -193,6 +190,58 @@ public class UserServiceImpl implements UserService {
         return mapToAddressResDto(updatedAddress);
     }
 
+    @Override
+    public AuthResDto updateProfile(UpdateUserReqDto updateUserReqDto, Authentication authentication) {
+        Users users = findUserByEmail(authentication.getName());
+
+        String firstName = updateUserReqDto.getFirstName();
+        String lastName = updateUserReqDto.getLastName();
+        String email = updateUserReqDto.getEmail();
+        String password = updateUserReqDto.getPassword();
+        String phone = updateUserReqDto.getPhone();
+        String imageUrl = updateUserReqDto.getImageUrl();
+
+        if (firstName != null)
+            users.setFirstName(firstName);
+
+        if (lastName != null)
+            users.setLastName(lastName);
+
+        if (email != null && !email.equals(users.getEmail())) {
+            if (userRepository.existsByEmail(email)) {
+                throw new IllegalArgumentException("Email already in use");
+            }
+            users.setEmail(email);
+            }
+
+        if (password != null)
+            users.setPassword(passwordEncoder.encode(password));
+
+        if (phone != null)
+            users.setPhone(phone);
+
+        if (imageUrl != null)
+            users.setImageUrl(imageUrl);
+
+        Users newUser = userRepository.save(users);
+
+        CustomUserDetails customUserDetails = new CustomUserDetails(newUser);
+        String newToken = jwtTokenProvider.generateToken(customUserDetails);
+
+        Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
+        if (currentAuth != null) {
+            Authentication newAuth = new UsernamePasswordAuthenticationToken(
+                    customUserDetails,
+                    currentAuth.getCredentials(),
+                    currentAuth.getAuthorities()
+            );
+            SecurityContextHolder.getContext().setAuthentication(newAuth);
+        }
+
+
+        return mapToAuthResDto(newToken, newUser.getEmail());
+    }
+
     private Address mapToAddress(AddressReqDto addressReqDto) {
         Address newAddress = new Address();
         newAddress.setAddressLine1(addressReqDto.getAddressLine1());
@@ -207,10 +256,6 @@ public class UserServiceImpl implements UserService {
         return newAddress;
     }
 
-    private Users findUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
-    }
 
     private UserResDto maptoUserResDto(Users user) {
         UserResDto userResDto = new UserResDto();
@@ -229,14 +274,17 @@ public class UserServiceImpl implements UserService {
     }
 
     private AuthResDto mapToAuthResDto(String token, String email) {
-        Users user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found after successful login - this should not happen")); // Should not fail if login worked
-
+        Users user = findUserByEmail(email);
         AuthResDto authResDto = new AuthResDto();
         authResDto.setAccessToken(token);
         authResDto.setUserResDto(maptoUserResDto(user));
 
         return authResDto;
+    }
+
+    private Users findUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
     }
 
     private AddressResDto mapToAddressResDto(Address address) {

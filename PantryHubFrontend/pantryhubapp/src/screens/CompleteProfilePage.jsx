@@ -106,11 +106,6 @@ const CompleteProfilePage = ({
 
         const userForNav = response.data.userResDto;
         const tokenForNav = response.data.accessToken;
-
-        // apiClient.defaults.headers.common['Authorization'] =
-        //   `Bearer ${tokenForNav}`;
-        //
-        // console.log(response.data);
         onProfileComplete(userForNav, tokenForNav);
       }
     } catch (error) {
