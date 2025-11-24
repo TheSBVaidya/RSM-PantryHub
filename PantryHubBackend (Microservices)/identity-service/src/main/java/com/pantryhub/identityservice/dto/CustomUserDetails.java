@@ -1,15 +1,12 @@
-package com.pantryhub.dto;
+package com.pantryhub.identityservice.dto;
 
-import com.pantryhub.entity.Users;
-import com.pantryhub.service.UserService;
-import org.apache.logging.log4j.message.StringFormattedMessage;
+import com.pantryhub.identityservice.entity.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 public class CustomUserDetails implements UserDetails {
 
