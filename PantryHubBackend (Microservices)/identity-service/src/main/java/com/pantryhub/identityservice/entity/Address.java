@@ -1,4 +1,4 @@
-package com.pantryhub.userservice.entity;
+package com.pantryhub.identityservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

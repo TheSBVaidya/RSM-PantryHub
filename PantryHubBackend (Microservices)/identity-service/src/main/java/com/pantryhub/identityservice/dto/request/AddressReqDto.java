@@ -1,4 +1,4 @@
-package com.pantryhub.userservice.dto.request;
+package com.pantryhub.identityservice.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

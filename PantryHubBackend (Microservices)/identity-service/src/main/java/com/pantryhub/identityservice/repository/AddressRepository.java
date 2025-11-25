@@ -1,7 +1,7 @@
-package com.pantryhub.userservice.repository;
+package com.pantryhub.identityservice.repository;
 
-import com.pantryhub.entity.Address;
-import com.pantryhub.entity.Users;
+import com.pantryhub.identityservice.entity.Address;
+import com.pantryhub.identityservice.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
