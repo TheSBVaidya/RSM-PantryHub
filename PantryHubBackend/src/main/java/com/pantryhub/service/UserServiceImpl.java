@@ -277,6 +277,38 @@ public class UserServiceImpl implements UserService {
 
         return newAddress;
     }
+    private AddressResDto mapToAddressResDto(Address address) {
+        AddressResDto addressResDto = new AddressResDto();
+
+        addressResDto.setId(address.getId());
+        addressResDto.setUserId(address.getUsers().getId());
+        addressResDto.setAddressLine1(address.getAddressLine1());
+        addressResDto.setAddressLine2(address.getAddressLine2());
+        addressResDto.setAddressType(address.getAddressType());
+        addressResDto.setCity(address.getCity());
+        addressResDto.setCountry(address.getCountry());
+        addressResDto.setLandmark(address.getLandmark());
+        addressResDto.setState(address.getState());
+        addressResDto.setZipCode(address.getZipCode());
+
+        return addressResDto;
+    }
+
+
+
+    private AuthResDto mapToAuthResDto(String token, String email) {
+        Users user = findUserByEmail(email);
+        AuthResDto authResDto = new AuthResDto();
+        authResDto.setAccessToken(token);
+        authResDto.setUserResDto(maptoUserResDto(user));
+
+        return authResDto;
+    }
+
+    private Users findUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+    }
 
 
     private UserResDto maptoUserResDto(Users user) {
@@ -295,35 +327,5 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    private AuthResDto mapToAuthResDto(String token, String email) {
-        Users user = findUserByEmail(email);
-        AuthResDto authResDto = new AuthResDto();
-        authResDto.setAccessToken(token);
-        authResDto.setUserResDto(maptoUserResDto(user));
-
-        return authResDto;
-    }
-
-    private Users findUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
-    }
-
-    private AddressResDto mapToAddressResDto(Address address) {
-        AddressResDto addressResDto = new AddressResDto();
-
-        addressResDto.setId(address.getId());
-        addressResDto.setUserId(address.getUsers().getId());
-        addressResDto.setAddressLine1(address.getAddressLine1());
-        addressResDto.setAddressLine2(address.getAddressLine2());
-        addressResDto.setAddressType(address.getAddressType());
-        addressResDto.setCity(address.getCity());
-        addressResDto.setCountry(address.getCountry());
-        addressResDto.setLandmark(address.getLandmark());
-        addressResDto.setState(address.getState());
-        addressResDto.setZipCode(address.getZipCode());
-
-        return addressResDto;
-    }
 
 }
