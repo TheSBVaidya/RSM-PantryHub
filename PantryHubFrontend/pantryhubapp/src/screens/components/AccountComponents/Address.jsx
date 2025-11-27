@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import apiClient from '../../../api/axiosInstance.js';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
-const Address = ({ onNavigateToAddAddress, onNavigateToEditAddress }) => {
+const Address = () => {
   const [addressess, setAddressess] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchAddress();
@@ -82,7 +84,9 @@ const Address = ({ onNavigateToAddAddress, onNavigateToEditAddress }) => {
               <div className="flex justify-end gap-4 flex-shrink-0">
                 <button
                   className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-yellow-600"
-                  onClick={() => onNavigateToEditAddress(add)}
+                  onClick={() =>
+                    navigate(`/add-address/${add.id}/edit`, { state: add })
+                  }
                 >
                   <FiEdit2 className="w-4 h-4" />
                   Edit
@@ -101,7 +105,7 @@ const Address = ({ onNavigateToAddAddress, onNavigateToEditAddress }) => {
       )}
       <div className="flex justify-center">
         <button
-          onClick={onNavigateToAddAddress}
+          onClick={() => navigate('/add-address')}
           className="w-52 bg-gray-400 hover:bg-red-600 text-white font-semibold py-3 px-5 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-400 transition duration-150 ease-in-out text-sm mt-8 justify-center"
         >
           Add Address

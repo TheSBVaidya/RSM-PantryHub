@@ -11,16 +11,20 @@ import Breadcrumb from './screens/components/Breadcrumb.jsx';
 import CartPage from './screens/CartPage.jsx';
 import WishlistPage from './screens/WishlistPage.jsx';
 import { Toaster } from 'sonner';
+import { replace, Route, Routes, useNavigate } from 'react-router-dom';
 
 function App() {
   // const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
-  const [view, setView] = useState('LOGIN');
-  const [addressEdit, setAddressEdit] = useState(null);
+  // const [view, setView] = useState('LOGIN');
+  // const [addressEdit, setAddressEdit] = useState(null);
+  const navigate = useNavigate();
 
   // List of views that should NOT have a Header or Footer
-  const viewsWithoutHeaderFooter = ['LOGIN', 'SIGNUP', 'COMPLETE_PROFILE']; // List of views that should NOT have a Header or Footer
-  const viewsWithoutBreadcrumb = ['LOGIN', 'SIGNUP', 'COMPLETE_PROFILE'];
+  const viewsWithoutHeaderFooter = ['/login', '/signup', '/complete-profile']; // List of views that should NOT have a Header or Footer
+  const viewsWithoutBreadcrumb = ['/login', '/signup', '/complete-profile'];
+
+  const currentPath = window.location.pathname;
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
@@ -33,12 +37,12 @@ function App() {
       setUser(parsedUser);
       // setIsAuthenticated(true);
       if (parsedUser.isProfileComplete) {
-        setView('DASHBOARD');
+        navigate('/dashboard', { replace: true });
       } else {
-        setView('COMPLETE_PROFILE');
+        navigate('/complete-profile', { replace: true });
       }
     } else {
-      setView('LOGIN');
+      navigate('/login', { replace: true });
     }
   }, []);
 
@@ -51,9 +55,9 @@ function App() {
     setUser(loggedInUser);
     // setIsAuthenticated(true);
     if (loggedInUser.isProfileComplete) {
-      setView('DASHBOARD');
+      navigate('/dashboard');
     } else {
-      setView('COMPLETE_PROFILE');
+      navigate('/complete-profile');
     }
   };
 
@@ -62,14 +66,14 @@ function App() {
     localStorage.removeItem('user');
     delete apiClient.defaults.headers.common['Authorization'];
     setUser(null);
-    setView('LOGIN');
+    navigate('/login');
   };
 
   const handleProfileUpdate = (updatedUser) => {
     const newUser = { ...user, ...updatedUser };
     localStorage.setItem('user', JSON.stringify(newUser));
     setUser(updatedUser);
-    setView('ADD_ADDRESS');
+    navigate('/add-address');
   };
 
   const handleAccountUpdate = (updatedUser) => {
@@ -81,144 +85,155 @@ function App() {
 
   const handleSignupNavigation = (userForNav, tokenForNav) => {
     handleLoginSuccess(userForNav, tokenForNav);
-    setView('ADD_ADDRESS');
-  };
-
-  const handleNavigatesToSignup = () => {
-    setView('SIGNUP');
-  };
-
-  const handleNavigatesToLogin = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('user');
-    setView('LOGIN');
+    navigate('/add-address');
   };
 
   const handleAddressAdded = () => {
-    setAddressEdit(null);
-
-    if (view == 'ADD_ADDRESS' && !user.isProfileComplete) {
-      setView('DASHBOARD');
+    if (!user.isProfileComplete) {
+      navigate('/dashboard');
     } else {
-      setView('ACCOUNT');
+      navigate('/account');
     }
   };
 
-  const handleNavigateToDashboard = () => {
-    setView('DASHBOARD');
-  };
+  // const handleNavigateToEditAddress = (address) => {
+  //   setAddressEdit(address);
+  //   navigate('/add-address');
+  // };
 
-  const handleNavigateToAccount = () => {
-    setView('ACCOUNT');
-  };
+  // const handleNavigatesToSignup = () => {
+  //   setView('SIGNUP');
+  // };
+  //
+  // const handleNavigatesToLogin = () => {
+  //   localStorage.removeItem('accessToken');
+  //   localStorage.removeItem('user');
+  //   setView('LOGIN');
+  // };
+  //
+  // const handleNavigateToDashboard = () => {
+  //   setView('DASHBOARD');
+  // };
+  //
+  // const handleNavigateToAccount = () => {
+  //   setView('ACCOUNT');
+  // };
+  //
+  // const handleNavigateToCart = () => {
+  //   setView('CART');
+  // };
+  //
+  // const handleNavigateToWishlist = () => {
+  //   setView('WISHLIST');
+  // };
+  //
+  // const handleNavigateToAddAddress = () => {
+  //   // setAddressEdit(null);
+  //   setView('ADD_ADDRESS');
+  // };
 
-  const handleNavigateToCart = () => {
-    setView('CART');
-  };
-
-  const handleNavigateToWishlist = () => {
-    setView('WISHLIST');
-  };
-
-  const handleNavigateToAddAddress = () => {
-    // setAddressEdit(null);
-    setView('ADD_ADDRESS');
-  };
-
-  const handleNavigateToEditAddress = (address) => {
-    setAddressEdit(address);
-    setView('ADD_ADDRESS');
-  };
+  const hideHeaderFooter = viewsWithoutHeaderFooter.includes(currentPath);
+  const hideBreadcrumb = viewsWithoutBreadcrumb.includes(currentPath);
 
   const renderContent = () => {
-    switch (view) {
-      case 'LOGIN':
-        return (
-          <LoginPage
-            onLoginSuccess={handleLoginSuccess}
-            onNavigateToSignup={handleNavigatesToSignup}
-          />
-        );
+    return (
+      <Routes>
+        <Route
+          path="/login"
+          element={
+            <LoginPage
+              onLoginSuccess={handleLoginSuccess}
+              onNavigateToSignup={() => navigate('/signup')}
+            />
+          }
+        />
 
-      case 'SIGNUP':
-        return (
-          <CompleteProfilePage
-            onProfileComplete={handleSignupNavigation}
-            onNavigationToLogin={handleNavigatesToLogin}
-          />
-        );
+        <Route
+          path="/signup"
+          element={
+            <CompleteProfilePage
+              onProfileComplete={handleSignupNavigation}
+              onNavigationToLogin={() => navigate('/login')}
+            />
+          }
+        />
 
-      case 'COMPLETE_PROFILE':
-        return (
-          <CompleteProfilePage
-            user={user}
-            onProfileComplete={handleProfileUpdate}
-          />
-        );
+        <Route
+          path="/complete-profile"
+          element={
+            <CompleteProfilePage
+              user={user}
+              onProfileComplete={handleProfileUpdate}
+            />
+          }
+        />
 
-      case 'ADD_ADDRESS':
-        return (
-          <AddAddressPage
-            user={user}
-            onAddressAdded={handleAddressAdded}
-            addressToEdit={addressEdit} // <-- New handler
-          />
-        );
+        <Route
+          path="/add-address"
+          element={
+            <AddAddressPage user={user} onAddressAdded={handleAddressAdded} />
+          }
+        />
 
-      case 'DASHBOARD':
-        return <Dashboard user={user} onLogout={handleLogout} />;
+        <Route path="/add-address/:id/edit" element={<AddAddressPage />} />
 
-      case 'ACCOUNT':
-        return (
-          <AccountPage
-            user={user}
-            onLogout={handleLogout}
-            onAccountUpdate={handleAccountUpdate}
-            onNavigateToAddAddress={handleNavigateToAddAddress}
-            onNavigateToEditAddress={handleNavigateToEditAddress}
-          />
-        );
+        <Route
+          path="/account"
+          element={
+            <AccountPage
+              user={user}
+              onLogout={handleLogout}
+              onAccountUpdate={handleAccountUpdate}
+              // onNavigateToAddAddress={() => navigate('/add-address')}
+              // onNavigateToEditAddress={() => navigate('/add-address/:id/edit')}
+            />
+          }
+        />
 
-      case 'CART':
-        return <CartPage />;
+        <Route path="/cart" element={<CartPage />} />
 
-      case 'WISHLIST':
-        return <WishlistPage />;
+        <Route path="/wishlist" element={<WishlistPage />} />
 
-      default:
-        return (
-          <LoginPage
-            onLoginSuccess={handleLoginSuccess}
-            onNavigateToSignup={handleNavigatesToSignup}
-          />
-        );
-    }
+        <Route path="/dashboard" element={<Dashboard />} />
+
+        {/* Default/fallback route */}
+        <Route
+          path="*"
+          element={
+            <LoginPage
+              onLoginSuccess={handleLoginSuccess}
+              onNavigateToSignup={() => navigate('/signup')}
+            />
+          }
+        />
+      </Routes>
+    );
   };
 
   return (
     <div>
       <Toaster richColors closeButton position="top-right" />
 
-      {!viewsWithoutHeaderFooter.includes(view) && (
+      {!hideHeaderFooter && (
         <Header
           onLogout={handleLogout}
-          onNavigateToAccount={handleNavigateToAccount}
-          onNavigateToDashboard={handleNavigateToDashboard}
-          onNavigateToCart={handleNavigateToCart}
-          onNavigateToWishlistpage={handleNavigateToWishlist}
+          onNavigateToAccount={() => navigate('/account')}
+          onNavigateToDashboard={() => navigate('/dashboard')}
+          onNavigateToCart={() => navigate('/cart')}
+          onNavigateToWishlistpage={() => navigate('/wishlist')}
           user={user}
         />
       )}
-      {!viewsWithoutBreadcrumb.includes(view) && (
+      {!hideBreadcrumb && (
         <Breadcrumb
-          currentView={view}
-          onNavigateToDashboard={handleNavigateToDashboard}
+          currentView={currentPath}
+          onNavigateToDashboard={() => navigate('/dashboard')}
         />
       )}
       <main className="min-h-[calc(100vh-128px)] bg-gray-50">
         {renderContent()}
       </main>
-      {!viewsWithoutHeaderFooter.includes(view) && <Footer />}
+      {!hideHeaderFooter && <Footer />}
     </div>
   );
 }

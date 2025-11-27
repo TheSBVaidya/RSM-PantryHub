@@ -2,6 +2,7 @@ import apiClient from '../api/axiosInstance.js';
 import { useEffect, useState } from 'react';
 import { SpinIcon } from './components/Icons.jsx';
 import { toast } from 'sonner';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const FormField = ({
   id,
@@ -97,15 +98,20 @@ const intitalAddressData = {
   addressType: '',
 };
 
-const AddAddressPage = ({ onAddressAdded, addressToEdit }) => {
+const AddAddressPage = () => {
   const [addressData, setAddressData] = useState(intitalAddressData);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
+  // const [isEditMode, setIsEditMode] = useState(false);
+  const navigate = useNavigate();
+
+  const addressToEdit = useLocation().state;
+  const isEditMode = !!addressToEdit;
 
   useEffect(() => {
-    if (addressToEdit) {
-      setIsEditMode(true);
+    console.log();
+    if (isEditMode) {
+      // setIsEditMode(true);
       setAddressData({
         addressLine1: addressToEdit.addressLine1 || '',
         addressLine2: addressToEdit.addressLine2 || '',
@@ -116,9 +122,6 @@ const AddAddressPage = ({ onAddressAdded, addressToEdit }) => {
         landmark: addressToEdit.landmark || '',
         addressType: addressToEdit.addressType || 'HOME',
       });
-    } else {
-      setIsEditMode(false);
-      setAddressData(intitalAddressData);
     }
   }, [addressToEdit]);
 
@@ -142,12 +145,13 @@ const AddAddressPage = ({ onAddressAdded, addressToEdit }) => {
           addressData
         );
         toast.success('Address is Updated...!');
-        onAddressAdded();
+        // onAddressAdded();
       } else {
         await apiClient.post('/address/addAddress', addressData);
         toast.success('Address is Added...');
-        onAddressAdded();
+        // onAddressAdded();
       }
+      navigate(-1);
     } catch (error) {
       console.error('Add address error:', error);
       const message =

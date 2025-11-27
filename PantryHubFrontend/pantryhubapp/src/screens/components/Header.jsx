@@ -7,13 +7,10 @@ import {
   Wishlist,
 } from './Icons.jsx';
 import logo from '../../assets/logo.svg';
-const Header = ({
-  user,
-  onNavigateToAccount,
-  onNavigateToDashboard,
-  onNavigateToCart,
-  onNavigateToWishlistpage,
-}) => {
+import { useNavigate } from 'react-router-dom';
+const Header = () => {
+  const navigate = useNavigate();
+
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="bg-gray-50 py-1 px-4 sm:px-6 lg:px-8 border-b border-gray-200 shadow-sm">
@@ -82,7 +79,7 @@ const Header = ({
       {/* main Header */}
       <div className="container mx-auto py-4 sm:px-6 lg:px-8 flex justify-between items-center">
         {/*Logo*/}
-        <a onClick={onNavigateToDashboard} className="cursor-pointer">
+        <a onClick={() => navigate('/dashboard')} className="cursor-pointer">
           <div className="flex items-center flex-shrink-0">
             <img src={logo} alt="PantryHub Logo" className="h-10 mr-2" />
             <div>
@@ -125,7 +122,7 @@ const Header = ({
         {/*Icons*/}
         <div className="flex items-center space-x-4 text-sm">
           <a
-            onClick={onNavigateToAccount}
+            onClick={() => navigate('/account')}
             className="flex items-center text-gray-600 hover:text-green-600 cursor-pointer"
           >
             <Account />
@@ -133,7 +130,7 @@ const Header = ({
           </a>
 
           <a
-            onClick={onNavigateToWishlistpage}
+            onClick={() => navigate('/wishlist')}
             className="flex items-center text-gray-600 hover:text-green-600 cursor-pointer"
           >
             <Wishlist />
@@ -141,7 +138,7 @@ const Header = ({
           </a>
 
           <a
-            onClick={onNavigateToCart}
+            onClick={() => navigate('/cart')}
             className="flex items-center text-gray-600 hover:text-green-600 cursor-pointer"
           >
             <Cart />

@@ -1,16 +1,21 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const viewTitle = {
-  ACCOUNT: 'My Account',
-  ADD_ADDRESS: 'Add_Address',
-  DASHBOARD: 'Home',
-  CART: 'Cart',
+  '/account': 'My Account',
+  '/add-address': 'Add_Address',
+  '/dashboard': 'Home',
+  '/cart': 'Cart',
+  '/wishlist': 'Wishlist',
 };
 
-const Breadcrumb = ({ currentView, onNavigateToDashboard }) => {
+const Breadcrumb = ({ currentView }) => {
   const [title, setTitle] = useState('');
 
+  const navigate = useNavigate();
+
   useEffect(() => {
+    console.log('CurrentView: ' + currentView);
     setTitle(viewTitle[currentView] || 'page');
   }, [currentView]);
 
@@ -21,7 +26,7 @@ const Breadcrumb = ({ currentView, onNavigateToDashboard }) => {
         {title !== 'Home' && (
           <p className="text-xs">
             <a
-              onClick={onNavigateToDashboard}
+              onClick={() => navigate('/dashboard')}
               className="hover:underline cursor-pointer"
               // Note: You'll want to make this link navigate home later
               // onClick={onNavigateToDashboard} // (You would need to pass this prop)
