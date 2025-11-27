@@ -37,11 +37,7 @@ const FormField = ({
   </div>
 );
 
-const CompleteProfilePage = ({
-  user,
-  onProfileComplete,
-  onNavigationToLogin,
-}) => {
+const CompleteProfilePage = ({ user, onProfileComplete }) => {
   const isUpdateMode = !!user; //if user data passed we are in update mode
 
   const [formData, setFormData] = useState({

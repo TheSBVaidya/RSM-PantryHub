@@ -8,14 +8,17 @@ import {
 import { useGoogleLogin } from '@react-oauth/google';
 import apiClient from '../api/axiosInstance.js';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
-const LoginPage = ({ onLoginSuccess, onNavigateToSignup }) => {
+const LoginPage = ({ onLoginSuccess }) => {
   const [error, setError] = useState(null);
   const [email, setEmail] = useState('sanjaybabanvaidya@gmail.com');
   const [password, setPassword] = useState('Sanjay@180');
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -222,7 +225,10 @@ const LoginPage = ({ onLoginSuccess, onNavigateToSignup }) => {
         <p className="text-center text-xs text-gray-500 pt-4">
           Don't have an account?
           <a
-            onClick={onNavigateToSignup}
+            onClick={(e) => {
+              e.preventDefault();
+              navigate('/signup');
+            }}
             href="#"
             className="font-medium text-blue-600 hover:text-green-700 hover:underline ml-1"
           >
