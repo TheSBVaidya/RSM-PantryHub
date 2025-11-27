@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 
 const LoginPage = ({ onLoginSuccess, onNavigateToSignup }) => {
   const [error, setError] = useState(null);
-  const [email, setEmail] = useState('meghavaidya@gmail.com');
+  const [email, setEmail] = useState('sanjaybabanvaidya@gmail.com');
   const [password, setPassword] = useState('Sanjay@180');
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

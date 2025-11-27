@@ -138,13 +138,13 @@ const AddAddressPage = ({ onAddressAdded, addressToEdit }) => {
     try {
       if (isEditMode) {
         await apiClient.put(
-          `/users/updateAddress/${addressToEdit.id}`,
+          `/address/updateAddress/${addressToEdit.id}`,
           addressData
         );
         toast.success('Address is Updated...!');
         onAddressAdded();
       } else {
-        await apiClient.post('/users/addAddress', addressData);
+        await apiClient.post('/address/addAddress', addressData);
         toast.success('Address is Added...');
         onAddressAdded();
       }
