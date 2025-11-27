@@ -56,15 +56,33 @@ const CompleteProfilePage = ({
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (user) {
-      setFormData((prevData) => ({
-        ...prevData,
-        firstName: user.firstName || '',
-        lastName: user.lastName || '',
-        email: user.email || '',
-      }));
-    }
+    const loadUser = async () => {
+      try {
+        const response = await apiClient.get('/user/me');
+
+        const newUser = response.data; // actual user object
+
+        console.log(newUser);
+
+        if (newUser) {
+          setFormData((prevData) => ({
+            ...prevData,
+            firstName: newUser.firstName || '',
+            lastName: newUser.lastName || '',
+            email: newUser.email || '',
+          }));
+        }
+      } catch (error) {
+        console.error('Failed to fetch user:', error);
+      }
+    };
+
+    loadUser();
   }, [user]);
+
+  // const fetchUser = async () => {
+  //   return await apiClient.get('/user/me');
+  // };
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -91,7 +109,7 @@ const CompleteProfilePage = ({
       if (isUpdateMode) {
         // means user comes from login to complete the profile
 
-        await apiClient.patch('/users/updateProfile', {
+        await apiClient.patch('/user/updateProfile', {
           phone: formData.phone,
           password: formData.password,
         });
@@ -104,7 +122,7 @@ const CompleteProfilePage = ({
 
         console.log(payload);
 
-        const response = await apiClient.post('/users/register', payload);
+        const response = await apiClient.post('/auth/register', payload);
         console.log(response.data);
 
         toast.success('Register Successfully!');
@@ -160,6 +178,7 @@ const CompleteProfilePage = ({
               value={formData.firstName}
               onChange={handleFormChange}
               required
+              disabled={isUpdateMode}
             />
             <FormField
               id="lastName"
@@ -169,6 +188,7 @@ const CompleteProfilePage = ({
               value={formData.lastName}
               onChange={handleFormChange}
               required
+              disabled={isUpdateMode}
             />
             <FormField
               id="email"
@@ -178,6 +198,7 @@ const CompleteProfilePage = ({
               value={formData.email}
               onChange={handleFormChange}
               required
+              disabled={isUpdateMode}
             />
             <FormField
               id="phone"

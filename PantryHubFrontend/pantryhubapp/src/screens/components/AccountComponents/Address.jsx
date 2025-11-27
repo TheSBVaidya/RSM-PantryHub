@@ -12,7 +12,7 @@ const Address = ({ onNavigateToAddAddress, onNavigateToEditAddress }) => {
 
   const fetchAddress = async () => {
     try {
-      const response = await apiClient.get('/users/me-address');
+      const response = await apiClient.get('/address/me-address');
       const data = response.data;
       const addressArray = Array.isArray(data) ? data : [data];
       setAddressess(addressArray);
@@ -29,7 +29,7 @@ const Address = ({ onNavigateToAddAddress, onNavigateToEditAddress }) => {
         label: 'Yes, Delete',
         onClick: async () => {
           try {
-            await apiClient.delete(`/users/deleteAddress/${id}`);
+            await apiClient.delete(`/address/deleteAddress/${id}`);
             setAddressess((prev) => prev.filter((a) => a.id != id));
             // alert('Address Successfully Deleted...');
             toast.success('Address Successfully Deleted...');

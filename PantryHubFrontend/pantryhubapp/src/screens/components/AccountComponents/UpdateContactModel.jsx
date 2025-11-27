@@ -52,7 +52,7 @@ const UpdateContactModel = ({ field, currentValue, onClose, onUpdate }) => {
     const payload = { [field]: newValue };
 
     const updateValuePromise = apiClient
-      .patch('/users/updateProfile', payload)
+      .patch('/user/updateProfile', payload)
       .then((response) => {
         const { accessToken, userResDto } = response.data;
         localStorage.setItem('accessToken', accessToken);
