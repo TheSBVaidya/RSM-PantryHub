@@ -21,6 +21,7 @@ public class AdminProductController {
     @GetMapping
     public ResponseEntity<List<ProductResDto>> getAllProducts() {
         List<ProductResDto> productResDtoList = productService.getAllProducts();
+        System.out.println(productResDtoList);
         return ResponseEntity.ok(productResDtoList);
     }
 
@@ -42,4 +43,11 @@ public class AdminProductController {
         ProductResDto productResDto = productService.updateProduct(id, productReqDto);
         return ResponseEntity.ok(productResDto);
     }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<ProductResDto> toggleProductStatus(@PathVariable Long id) {
+        ProductResDto productResDto = productService.toggleProductStatus(id);
+        return ResponseEntity.ok(productResDto);
+    }
+
 }

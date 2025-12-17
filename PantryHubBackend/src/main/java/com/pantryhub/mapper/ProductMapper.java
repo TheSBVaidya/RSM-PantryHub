@@ -24,7 +24,11 @@ public class ProductMapper {
         dto.setImageUrl(product.getImageUrl());
         dto.setGalleryImages(product.getGalleryImages());
         dto.setTags(product.getTags());
-        dto.setCategoryId(product.getCategoryId());
+        if (product.getCategoryId() != null) {
+            dto.setCategoryId(product.getCategoryId().getId());
+            dto.setCategoryName(product.getCategoryId().getName());
+        }
+        dto.setIsActive(product.getIsActive());
 
         return dto;
     }

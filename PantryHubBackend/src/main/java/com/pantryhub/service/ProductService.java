@@ -24,4 +24,8 @@ public interface ProductService {
     ProductResDto uploadProductImages(Long id, MultipartFile[] images);
 
     ProductResDto updateProduct(Long id, ProductReqDto productReqDto);
+
+    ProductResDto toggleProductStatus(Long id);
+
+    List<ProductResDto> getProductByCategoryId(Long id);
 }

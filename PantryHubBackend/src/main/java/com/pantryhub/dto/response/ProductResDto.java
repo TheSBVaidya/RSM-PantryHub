@@ -24,5 +24,7 @@ public class ProductResDto {
     private String imageUrl;
     private List<String> galleryImages;
     private List<String> tags;
-    private Category CategoryId;
+    private Boolean isActive;
+    private Long categoryId;
+    private String categoryName;
 }

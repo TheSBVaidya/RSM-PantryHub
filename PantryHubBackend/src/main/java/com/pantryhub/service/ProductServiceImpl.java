@@ -8,6 +8,7 @@ import com.pantryhub.mapper.ProductMapper;
 import com.pantryhub.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -51,6 +52,7 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
     }
 
+    //admin
     @Override
     public List<ProductResDto> getAllProducts() {
         List<Product> products = productRepository.findAll();
@@ -109,6 +111,30 @@ public class ProductServiceImpl implements ProductService {
         Product updatedProduct = productRepository.save(product);
 
         return mapToProductResDto(updatedProduct);
+    }
+
+    @Override
+    public ProductResDto toggleProductStatus(Long id) {
+
+        Product product = findProductById(id);
+
+        product.setIsActive(!product.getIsActive());
+
+        Product afterToggleStatus = productRepository.save(product);
+
+        return mapToProductResDto(afterToggleStatus);
+    }
+
+    @Override
+    public List<ProductResDto> getProductByCategoryId(Long id) {
+        List<Product> product = productRepository.findByCategoryId_IdAndIsActiveTrue(id);
+
+        if (product.isEmpty())
+            throw new EntityNotFoundException("Products Not Available For This Category!");
+
+        return product.stream()
+                .map(ProductMapper::mapToProductResDto)
+                .collect(Collectors.toList());
     }
 
     private Product findProductById(Long id){

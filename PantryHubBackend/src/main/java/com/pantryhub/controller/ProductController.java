@@ -39,4 +39,10 @@ public class ProductController {
         return ResponseEntity.ok(productResDtoList);
     }
 
+    @GetMapping("/getByCategory/{id}")
+    public ResponseEntity<?> getProductByCategoryId(@PathVariable Long id) {
+        List<ProductResDto> productResDto = productService.getProductByCategoryId(id);
+        return ResponseEntity.ok(productResDto);
+    }
+
 }
