@@ -28,7 +28,7 @@ const Profile = ({ onAccountUpdate }) => {
 
   const fetchUserData = async () => {
     try {
-      const response = await apiClient.get('/user/me');
+      const response = await apiClient.get('/users/me');
       // console.log(response.data);
       setFormData(response.data);
       setInitialNames({
@@ -52,7 +52,7 @@ const Profile = ({ onAccountUpdate }) => {
     };
 
     try {
-      await apiClient.patch('/user/updateProfile', payload);
+      await apiClient.patch('/users/updateProfile', payload);
       // alert('Name is Updated');
       toast.success('Updated...!');
       setInitialNames({
@@ -89,7 +89,7 @@ const Profile = ({ onAccountUpdate }) => {
 
       const imageChangePromise = apiClient
         .post(
-          '/user/profile-image',
+          '/users/profile-image',
           { image },
           {
             headers: { 'Content-Type': 'multipart/form-data' },

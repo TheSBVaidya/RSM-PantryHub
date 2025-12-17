@@ -1,5 +1,6 @@
 package com.pantryhub.dto.request;
 
+import com.pantryhub.entity.Category;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -17,5 +18,5 @@ public class ProductReqDto {
     private String dealTag;
     private String status;
     private List<String> tags;
-    private Long categoryId;
+    private Category categoryId;
 }

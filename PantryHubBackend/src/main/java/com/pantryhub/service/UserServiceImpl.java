@@ -50,8 +50,8 @@ public class UserServiceImpl implements UserService {
         currentUserResDto.setFirstName(users.getFirstName());
         currentUserResDto.setLastName(users.getLastName());
         currentUserResDto.setId(users.getId());
-//        currentUserResDto.setPassword(users.getPassword());
         currentUserResDto.setPhone(users.getPhone());
+        currentUserResDto.setIsProfileComplete(users.getIsProfileComplete());
         currentUserResDto.setImg_url(users.getImageUrl());
 
         return currentUserResDto;
@@ -91,6 +91,8 @@ public class UserServiceImpl implements UserService {
 
         if (imageUrl != null)
             users.setImageUrl(imageUrl);
+
+        users.setIsProfileComplete(true);
 
         Users newUser = userRepository.save(users);
 

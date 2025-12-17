@@ -1,5 +1,6 @@
 package com.pantryhub.dto.response;
 
+import com.pantryhub.entity.Category;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -23,5 +24,5 @@ public class ProductResDto {
     private String imageUrl;
     private List<String> galleryImages;
     private List<String> tags;
-    private Long CategoryId;
+    private Category CategoryId;
 }

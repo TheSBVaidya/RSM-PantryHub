@@ -54,11 +54,11 @@ const CompleteProfilePage = ({ user, onProfileComplete }) => {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const response = await apiClient.get('/user/me');
+        const response = await apiClient.get('/users/me');
 
         const newUser = response.data; // actual user object
 
-        console.log(newUser);
+        console.log('Complete Profile: ', newUser);
 
         if (newUser) {
           setFormData((prevData) => ({
@@ -105,13 +105,14 @@ const CompleteProfilePage = ({ user, onProfileComplete }) => {
       if (isUpdateMode) {
         // means user comes from login to complete the profile
 
-        await apiClient.patch('/user/updateProfile', {
+        const user = await apiClient.patch('/users/updateProfile', {
           phone: formData.phone,
           password: formData.password,
         });
 
         toast.success('Successfully updated!');
-        onProfileComplete(user);
+        console.log('Update Mode: ', user);
+        onProfileComplete(user.data.userResDto);
       } else {
         const payload = { ...formData };
         delete payload.confirmPassword;

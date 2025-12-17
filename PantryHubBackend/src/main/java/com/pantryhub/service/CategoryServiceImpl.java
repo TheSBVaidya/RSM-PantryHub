@@ -3,7 +3,6 @@ package com.pantryhub.service;
 import com.pantryhub.dto.request.CategoryReqDto;
 import com.pantryhub.dto.response.CategoryResDto;
 import com.pantryhub.entity.Category;
-import com.pantryhub.mapper.CategoryMapper;
 import com.pantryhub.repository.CategoryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,27 +23,24 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public List<CategoryResDto> getAllActiveCategories() {
         List<Category> list = categoryRepository.findAllByIsActiveTrue();
-        Map<Long, List<Category>> categoriesByParentId = list.stream()
-                .filter(category -> category.getParentId() != null)
-                .collect(Collectors.groupingBy(Category::getParentId));
+//        Map<Long, List<Category>> categoriesByParentId = list.stream()
+//                .filter(category -> category.getParentId() != null)
+//                .collect(Collectors.groupingBy(Category::getParentId));
 
-        return buildHierarchy(null, list, categoriesByParentId);
+        return buildHierarchy(null, list);
     }
 
     @Override
     public CategoryResDto getActiveCategoriesById(Long id) {
-        List<Category> listCategory = categoryRepository.findAllByIsActiveTrue();
 
-        Category category = listCategory.stream()
-                .filter(c -> c.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Category not found of given id: " + id));
+        List<Category> allActiveCategories = categoryRepository.findAllByIsActiveTrue();
 
-        Map<Long, List<Category>> categoriesByParentId = listCategory.stream()
-                .filter(c -> c.getParentId() != null)
-                .collect(Collectors.groupingBy(Category::getParentId));
+        Category category = findCategoryById(id);
 
-        List<CategoryResDto> subCategories = buildHierarchy(category.getId(), listCategory, categoriesByParentId);
+        List<CategoryResDto> subCategories =
+            buildHierarchy(category.getId(), allActiveCategories);
+
+//        List<CategoryResDto> subCategories = buildHierarchy(category.getId(), listCategory, categoriesByParentId);
         return mapToCategoryResDto(category, subCategories);
     }
 
@@ -83,7 +79,6 @@ public class CategoryServiceImpl implements CategoryService{
         String description = categoryReqDto.getDescription();
         Long parentId = categoryReqDto.getParentId();
         String imageUrl = categoryReqDto.getImageUrl();
-//        String iconName = categoryReqDto.getIconName();
         Integer sortOrder = categoryReqDto.getSortOrder();
         String metaTitle = categoryReqDto.getMetaTitle();
         String metaDescription = categoryReqDto.getMetaDescription();
@@ -101,9 +96,6 @@ public class CategoryServiceImpl implements CategoryService{
         if (imageUrl != null) {
             category.setImageUrl(imageUrl);
         }
-//        if (iconName != null) {
-//            category.setIconName(iconName);
-//        }
         if (sortOrder != null) {
             category.setSortOrder(sortOrder);
         }
@@ -126,11 +118,8 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public List<CategoryResDto> getAllCategories() {
         List<Category> list = categoryRepository.findAll();
-        Map<Long, List<Category>> categoriesByParentId = list.stream()
-                .filter(category -> category.getParentId() != null)
-                .collect(Collectors.groupingBy(Category::getParentId));
 
-        return buildHierarchy(null, list, categoriesByParentId);
+        return buildHierarchy(null, list);
     }
 
     @Override
@@ -145,28 +134,24 @@ public class CategoryServiceImpl implements CategoryService{
 
     }
 
-    private List<CategoryResDto> buildHierarchy(Long parentId, List<Category> list, Map<Long, List<Category>> categoriesByParentId) {
-        List<Category> directChildren = list.stream()
-                .filter(category -> (parentId == null && category.getParentId() == null) ||
-                                    (parentId != null && parentId.equals(category.getParentId()))    )
-                .sorted(Comparator.comparing(Category::getSortOrder))
-                .collect(Collectors.toList());
+    private List<CategoryResDto> buildHierarchy(Long parentId, List<Category> categories) {
 
-        if (directChildren.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        return directChildren.stream()
-                .map(category -> {
-                    List<CategoryResDto> subCategories = buildHierarchy(category.getId(), list, categoriesByParentId);
-
-                    return mapToCategoryResDto(category, subCategories);
-                })
+        return categories.stream()
+                .filter(c -> Objects.equals(c.getParentId(), parentId))
+                .sorted(Comparator.comparing(
+                        Category::getSortOrder,
+                        Comparator.nullsLast(Integer::compareTo)
+                ))
+                .map(c -> mapToCategoryResDto(
+                        c,
+                        buildHierarchy(c.getId(), categories)
+                ))
                 .collect(Collectors.toList());
     }
 
+
     private Category findCategoryById(Long id) {
-        return categoryRepository.findById(id)
+        return categoryRepository.findByIdAndIsActiveTrue(id)
                 .orElseThrow(() -> new EntityNotFoundException("Category not found of given id: " + id));
     }
 }

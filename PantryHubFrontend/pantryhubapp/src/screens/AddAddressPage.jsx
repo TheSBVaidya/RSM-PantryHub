@@ -98,7 +98,7 @@ const intitalAddressData = {
   addressType: '',
 };
 
-const AddAddressPage = () => {
+const AddAddressPage = ({ onAddressAdded }) => {
   const [addressData, setAddressData] = useState(intitalAddressData);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -149,9 +149,9 @@ const AddAddressPage = () => {
       } else {
         await apiClient.post('/address/addAddress', addressData);
         toast.success('Address is Added...');
-        // onAddressAdded();
+        onAddressAdded();
       }
-      navigate(-1);
+      // navigate(-1);
     } catch (error) {
       console.error('Add address error:', error);
       const message =

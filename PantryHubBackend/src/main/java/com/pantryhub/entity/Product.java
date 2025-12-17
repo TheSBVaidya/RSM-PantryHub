@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -34,12 +35,13 @@ public class Product {
     @Column(nullable = false, precision = 10, scale = 1)
     private BigDecimal price;
 
-    @Column(precision = 10, scale = 2)
+    @Column(name = "old_price")
     private BigDecimal oldPrice;
 
-    @Column(precision = 10, scale = 2)
+    @Column(name = "cost_price")
     private BigDecimal costPrice;
 
+    @Column(name = "stock_quantity")
     private Integer stockQuantity;
 
     @Column(name = "unit_of_measure", nullable = false)
@@ -69,13 +71,21 @@ public class Product {
     @Column(name = "gallery_images")
     private List<String> galleryImages;
 
-    @Column(name = "category_id")
-    private Long categoryId;
-//    private Long brandId;
-    @CreationTimestamp
-    private LocalDateTime createdAt;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category categoryId;
+
+    private Boolean isActive = true;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
     @CreationTimestamp
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
 }

@@ -18,4 +18,5 @@ public class CurrentUserResDto {
 //    private String password;
     private String img_url;
     private String phone;
+    private Boolean isProfileComplete;
 }

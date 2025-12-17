@@ -54,6 +54,9 @@ function App() {
 
     setUser(loggedInUser);
     // setIsAuthenticated(true);
+
+    console.log('In App: ', loggedInUser);
+
     if (loggedInUser.isProfileComplete) {
       navigate('/dashboard');
     } else {
@@ -85,11 +88,13 @@ function App() {
 
   const handleSignupNavigation = (userForNav, tokenForNav) => {
     handleLoginSuccess(userForNav, tokenForNav);
+    console.log('In App: ', userForNav);
     navigate('/add-address');
   };
 
   const handleAddressAdded = () => {
-    if (!user.isProfileComplete) {
+    console.log('handleAddressAdded: ', user.isProfileComplete);
+    if (user.isProfileComplete) {
       navigate('/dashboard');
     } else {
       navigate('/account');
