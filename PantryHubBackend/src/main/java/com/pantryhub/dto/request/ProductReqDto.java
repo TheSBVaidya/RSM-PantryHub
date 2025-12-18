@@ -18,5 +18,5 @@ public class ProductReqDto {
     private String dealTag;
     private String status;
     private List<String> tags;
-    private Category categoryId;
+    private Long categoryId;
 }

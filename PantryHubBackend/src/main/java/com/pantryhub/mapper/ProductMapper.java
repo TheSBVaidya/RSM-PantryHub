@@ -2,6 +2,7 @@ package com.pantryhub.mapper;
 
 import com.pantryhub.dto.request.ProductReqDto;
 import com.pantryhub.dto.response.ProductResDto;
+import com.pantryhub.entity.Category;
 import com.pantryhub.entity.Product;
 import com.pantryhub.entity.ProductStatus;
 
@@ -33,7 +34,7 @@ public class ProductMapper {
         return dto;
     }
 
-    public static Product mapToProduct(ProductReqDto dto) {
+    public static Product mapToProduct(ProductReqDto dto, Category category) {
         if (dto == null)
             return null;
 
@@ -50,7 +51,7 @@ public class ProductMapper {
         if (dto.getStatus().equalsIgnoreCase(ProductStatus.ACTIVE.name()))
             product.setStatus(ProductStatus.ACTIVE);
         product.setTags(dto.getTags());
-        product.setCategoryId(dto.getCategoryId());
+        product.setCategoryId(category);
 
         return product;
     }
@@ -97,8 +98,8 @@ public class ProductMapper {
             product.setTags(dto.getTags());
 
         // category
-        if (dto.getCategoryId() != null)
-            product.setCategoryId(dto.getCategoryId());
+//        if (dto.getCategoryId() != null)
+//            product.setCategoryId(dto.getCategoryId());
 
         // status string -> enum (handled in service)
         if (dto.getStatus() != null)

@@ -1,48 +1,39 @@
-// src/components/ProductSection.js
-import React from 'react';
-import ProductCard from './ProductCard.jsx';
+import React, { useState } from 'react';
+import ProductCard from './ProductCard'; // Importing the component we made earlier
 
-function ProductSection({ title, categories, showAllLink, products }) {
+const ProductSection = ({ title, categories, products }) => {
+  const [activeTab, setActiveTab] = useState('All');
+
   return (
-    <section className="my-8">
-      {/* --- SECTION HEADER --- */}
-      <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+    <section className="mb-16">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <h2 className="text-3xl font-bold text-gray-800">{title}</h2>
 
-        {/* --- TABS --- */}
-        {categories && (
-          <div className="flex flex-wrap gap-x-4 gap-y-2 mt-4 md:mt-0">
-            {categories.map((cat) => (
-              <a
-                href={`#${cat}`}
-                key={cat}
-                className="text-gray-600 hover:text-green-600 font-medium"
-              >
-                {cat}
-              </a>
-            ))}
-          </div>
-        )}
-
-        {/* --- ALL DEALS LINK --- */}
-        {showAllLink && (
-          <a
-            href="#all"
-            className="text-green-600 font-medium hover:text-green-700 mt-4 md:mt-0"
-          >
-            All Deals &gt;
-          </a>
-        )}
+        {/* Modern Tabs */}
+        <div className="flex flex-wrap gap-2">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveTab(cat)}
+              className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
+                activeTab === cat
+                  ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200'
+                  : 'bg-white text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* --- PRODUCT GRID --- */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
     </section>
   );
-}
+};
 
 export default ProductSection;

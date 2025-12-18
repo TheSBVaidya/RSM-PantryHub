@@ -34,6 +34,7 @@ public class AdminProductController {
 
     @PatchMapping("/{id}/upload-image")
     public ResponseEntity<ProductResDto> uploadProductImages(@PathVariable Long id, @RequestParam MultipartFile[] images) {
+        System.out.println(images[0]);
         ProductResDto productResDto = productService.uploadProductImages(id, images);
         return ResponseEntity.ok(productResDto);
     }

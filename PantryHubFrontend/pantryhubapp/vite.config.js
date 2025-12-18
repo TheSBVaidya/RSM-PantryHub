@@ -10,11 +10,23 @@ export default defineConfig({
         target: 'http://localhost:8080',
         changeOrigin: true,
       },
-      '/user': {
+      '/users': {
         target: 'http://localhost:8080',
         changeOrigin: true,
       },
       '/address': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/wishlist': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/category': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/product': {
         target: 'http://localhost:8080',
         changeOrigin: true,
       },

@@ -1,72 +1,112 @@
-// src/components/ProductCard.js
+// src/components/DashboardComponents/ProductCard.jsx
 import React from 'react';
-import { FiStar, FiShoppingCart } from 'react-icons/fi'; // Using react-icons
+import { ShoppingCart, Heart, Eye, Star } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-// Function to dynamically set tag color
-const getTagClasses = (tag) => {
-  if (!tag) return 'hidden';
-  if (tag.toLowerCase() === 'sale') return 'bg-blue-500 text-white';
-  if (tag.toLowerCase() === 'new') return 'bg-green-500 text-white';
-  if (tag.includes('%')) return 'bg-red-500 text-white';
-  return 'bg-red-600 text-white'; // Default for 'Hot'
-};
+const ProductCard = ({ product }) => {
+  const navigate = useNavigate();
 
-function ProductCard({ product }) {
+  const handleCardClick = () => {
+    navigate(`/product/${product.id}`, { state: { product } });
+  };
+
+  // Calculate discount percentage if oldPrice exists
+  const discount = product.oldPrice
+    ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
+    : null;
+
   return (
-    <div className="border border-gray-200 rounded-lg shadow-sm bg-white relative transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-      {/* --- TAG --- */}
-      <div
-        className={`absolute top-3 left-3 text-xs font-bold px-2 py-1 rounded ${getTagClasses(product.tag)}`}
-      >
-        {product.tag}
+    <div
+      onClick={handleCardClick}
+      className="group relative w-full bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-emerald-100 transition-all duration-300 overflow-hidden"
+    >
+      {/* Badges */}
+      <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
+        {product.dealTag && (
+          <span className="px-3 py-1 text-xs font-bold text-white bg-emerald-500 rounded-full shadow-sm">
+            {product.dealTag}
+          </span>
+        )}
+        {discount && (
+          <span className="px-3 py-1 text-xs font-bold text-white bg-rose-500 rounded-full shadow-sm">
+            -{discount}%
+          </span>
+        )}
       </div>
 
-      {/* --- IMAGE --- */}
-      <div className="w-full h-48 flex items-center justify-center p-4">
+      {/* Action Buttons (appear on hover) */}
+      <div className="absolute top-4 right-4 z-10 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0 transition-all duration-300">
+        <button className="p-2 bg-white text-gray-600 rounded-full shadow-md hover:bg-emerald-50 hover:text-emerald-600 transition-colors">
+          <Heart size={18} />
+        </button>
+        <button className="p-2 bg-white text-gray-600 rounded-full shadow-md hover:bg-emerald-50 hover:text-emerald-600 transition-colors">
+          <Eye size={18} />
+        </button>
+      </div>
+
+      {/* Product Image */}
+      <div className="relative h-48 w-full bg-gray-50 overflow-hidden p-4">
         <img
-          src={product.img}
-          alt={product.title}
-          className="max-h-full max-w-full object-contain"
+          src={product.imageUrl}
+          alt={product.name}
+          className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500"
         />
       </div>
 
+      {/* Content */}
       <div className="p-4">
-        {/* --- CATEGORY & TITLE --- */}
-        <span className="text-xs text-gray-500">{product.category}</span>
-        <h3 className="text-md font-semibold text-gray-800 h-12 overflow-hidden mb-1">
-          {product.title}
+        <div className="text-xs text-gray-500 mb-1">{product.categoryName}</div>
+        <h3 className="font-bold text-gray-800 text-base mb-1 truncate hover:text-emerald-600 cursor-pointer transition-colors">
+          {product.name}
         </h3>
 
-        {/* --- RATING --- */}
-        <div className="flex items-center text-sm text-gray-500 mb-1">
-          <FiStar className="text-yellow-400 fill-current" />
-          <span className="ml-1">({product.rating})</span>
+        {/* Rating & Stock */}
+        <div className="flex items-center gap-2 mb-3">
+          <div className="flex text-yellow-400">
+            {[...Array(5)].map((_, i) => (
+              <Star
+                key={i}
+                size={14}
+                fill={i < (product.rating || 4) ? 'currentColor' : 'none'}
+              />
+            ))}
+          </div>
+          <span className="text-xs text-gray-400">
+            ({product.reviewCount || 4} reviews)
+          </span>
         </div>
 
-        {/* --- AUTHOR --- */}
-        <div className="text-sm text-gray-600 mb-2">
-          By{' '}
-          <span className="text-green-600 font-medium">{product.author}</span>
+        <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
+          <span className="bg-gray-100 px-2 py-0.5 rounded text-xs font-medium">
+            {product.unitOfMeasure}
+          </span>
+          <span
+            className={`text-xs ${product.stockQuantity > 0 ? 'text-emerald-600' : 'text-red-500'}`}
+          >
+            {product.stockQuantity > 0 ? 'In Stock' : 'Out of Stock'}
+          </span>
         </div>
 
-        {/* --- FOOTER: PRICE & ADD BUTTON --- */}
-        <div className="flex justify-between items-center">
-          <div className="flex items-baseline gap-2">
-            <span className="text-lg font-bold text-green-600">
-              ${product.price}
+        {/* Footer: Price & Add Button */}
+        <div className="flex items-center justify-between mt-auto">
+          <div className="flex flex-col">
+            <span className="text-lg font-extrabold text-emerald-600">
+              ₹{product.price}
             </span>
             {product.oldPrice && (
-              <del className="text-sm text-gray-400">${product.oldPrice}</del>
+              <span className="text-sm text-gray-400 line-through">
+                ₹{product.oldPrice}
+              </span>
             )}
           </div>
-          <button className="bg-green-100 text-green-700 font-bold py-2 px-4 rounded-md hover:bg-green-200 flex items-center gap-1 transition-colors">
-            <FiShoppingCart className="w-4 h-4" />
-            Add
+          <button className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 rounded-lg font-semibold hover:bg-emerald-500 hover:text-white transition-all duration-300 active:scale-95">
+            <ShoppingCart size={18} />
+            <span>Add</span>
           </button>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default ProductCard;

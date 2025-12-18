@@ -12,6 +12,7 @@ import CartPage from './screens/CartPage.jsx';
 import WishlistPage from './screens/WishlistPage.jsx';
 import { Toaster } from 'sonner';
 import { replace, Route, Routes, useNavigate } from 'react-router-dom';
+import ProductDetails from './screens/ProductDetails.jsx';
 
 function App() {
   // const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -197,9 +198,11 @@ function App() {
 
         <Route path="/cart" element={<CartPage />} />
 
-        <Route path="/wishlist" element={<WishlistPage />} />
+        <Route path="/wishlist" element={<WishlistPage user={user} />} />
 
         <Route path="/dashboard" element={<Dashboard />} />
+
+        <Route path="/product/:id" element={<ProductDetails />} />
 
         {/* Default/fallback route */}
         <Route

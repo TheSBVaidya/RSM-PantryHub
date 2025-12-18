@@ -2,13 +2,14 @@ package com.pantryhub.service;
 
 import com.pantryhub.dto.request.ProductReqDto;
 import com.pantryhub.dto.response.ProductResDto;
+import com.pantryhub.entity.Category;
 import com.pantryhub.entity.Product;
 import com.pantryhub.entity.ProductStatus;
 import com.pantryhub.mapper.ProductMapper;
+import com.pantryhub.repository.CategoryRepository;
 import com.pantryhub.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +30,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private FirebaseStorageService firebaseStorageService;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Override
     public List<ProductResDto> getAllActiveProduct() {
@@ -63,7 +67,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResDto createProduct(ProductReqDto productReqDto) {
-        Product product = productRepository.save(mapToProduct(productReqDto));
+        Category category = categoryRepository.findByIdAndIsActiveTrue(productReqDto.getCategoryId())
+                .orElseThrow(() -> new EntityNotFoundException("Category Not Available For this"));
+
+        Product product = productRepository.save(mapToProduct(productReqDto, category));
         return mapToProductResDto(product);
     }
 
