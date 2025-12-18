@@ -35,7 +35,7 @@ function NewsletterBanner() {
 
       {/* Delivery person image */}
       <img
-        src="/images/newsletter-delivery-man.png"
+        src="public/deliver-person.png"
         alt="Delivery"
         className="hidden lg:block absolute right-0 -bottom-8 w-1/3 z-0"
       />
