@@ -75,6 +75,7 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category categoryId;
 
+    @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 
     @Column(name = "deleted_at")
