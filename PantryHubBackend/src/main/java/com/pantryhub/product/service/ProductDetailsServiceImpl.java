@@ -41,6 +41,8 @@ public class ProductDetailsServiceImpl implements ProductDetailsService{
         ProductAdditionalInfo productAdditionalInfo = findAdditionalInfoById(id);
         List<Review> reviews = findAllProductReviews(id);
         Boolean isWishlisted = isWishlisted(users.getId(), id);
+        Long reviewCount = reviewCount(id);
+        Double avgRating = avgRating(id);
 
         ProductResDto productResDto = mapToProductResDto(product);
         AdditionalInfoResDto additionalInfoResDto = mapToAdditionalInfoResDto(productAdditionalInfo);
@@ -51,6 +53,8 @@ public class ProductDetailsServiceImpl implements ProductDetailsService{
         ProductDetailsResDto productDetailsResDto = new ProductDetailsResDto();
         productDetailsResDto.setProduct(productResDto);
         productDetailsResDto.setIsWishlisted(isWishlisted);
+        productDetailsResDto.setAvgRating(avgRating);
+        productDetailsResDto.setReviewCount(reviewCount);
         productDetailsResDto.setAdditionalInfo(additionalInfoResDto);
         productDetailsResDto.setReviews(reviewResDtos);
 
@@ -74,6 +78,14 @@ public class ProductDetailsServiceImpl implements ProductDetailsService{
 
     private List<Review> findAllProductReviews(Long id) {
         return reviewRepository.findAllByProduct_IdAndIsActiveTrue(id);
+    }
+
+    private Long reviewCount(Long productId) {
+        return reviewRepository.countByProductId(productId);
+    }
+
+    private Double avgRating(Long productId) {
+        return reviewRepository.findAverageRatingByProductId(productId);
     }
 
     private Boolean isWishlisted(Long userId, Long productId) {

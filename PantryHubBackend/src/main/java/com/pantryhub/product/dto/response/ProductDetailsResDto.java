@@ -10,6 +10,8 @@ public class ProductDetailsResDto {
 
     private ProductResDto product;
     private Boolean isWishlisted;
+    private Double avgRating;
+    private Long reviewCount;
     private AdditionalInfoResDto additionalInfo;
     private List<ReviewResDto> reviews;
 }

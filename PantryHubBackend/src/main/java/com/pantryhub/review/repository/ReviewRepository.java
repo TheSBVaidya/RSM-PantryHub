@@ -2,6 +2,7 @@ package com.pantryhub.review.repository;
 
 import com.pantryhub.review.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,4 +16,9 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Optional<Review> findByUserIdAndProductIdAndIsActiveTrue(Long userId, Long productId);
 
     List<Review> findAllByUser_IdAndIsActiveTrue(Long id);
+
+    Long countByProductId(Long productId);
+
+    @Query("SELECT AVG(r.rating) FROM Review r WHERE r.product.id = :productId")
+    Double findAverageRatingByProductId(Long productId);
 }
