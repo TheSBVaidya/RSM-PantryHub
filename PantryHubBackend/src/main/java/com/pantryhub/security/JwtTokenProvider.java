@@ -1,6 +1,5 @@
 package com.pantryhub.security;
 
-import com.pantryhub.dto.CustomUserDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
