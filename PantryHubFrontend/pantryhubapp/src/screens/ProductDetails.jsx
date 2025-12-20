@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import apiClient from '../api/axiosInstance.js';
 import { SpinIcon } from './components/Icons.jsx';
+import { toast } from 'sonner';
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -66,16 +67,33 @@ const ProductDetails = () => {
     return <div className="text-center p-10">Product not found.</div>;
   }
 
-  const { product, additionalInfo, reviews } = productFullData;
+  const { product, avgRating, reviewCount, additionalInfo, reviews } =
+    productFullData;
 
   const handleToggleWishlist = async () => {
     // Optimistic UI update
+    // const prevState = isWishlisted;
     setIsWishlisted(!isWishlisted);
+    const userId = JSON.parse(localStorage.getItem('user')).id;
+
     try {
-      await apiClient.post(`/users/wishlist/${product.id}`);
+      if (isWishlisted) {
+        //Remove
+        const response = await apiClient.delete(
+          `/wishlist/remove/${userId}/${product.id}`
+        );
+        toast.success(response.data);
+      } else {
+        //add
+        const response = await apiClient.post(
+          `/wishlist/add-to-wishlist/${userId}/${product.id}`
+        );
+        toast.success(response.data);
+      }
     } catch (err) {
       setIsWishlisted(!isWishlisted); // Revert
-      console.error('Wishlist toggle failed');
+      toast.error('Wishlist update failed');
+      console.error('Wishlist toggle failed', err);
     }
   };
 
@@ -175,19 +193,15 @@ const ProductDetails = () => {
                     <Star
                       key={i}
                       size={18}
-                      fill={
-                        i < Math.floor(product.avgRating)
-                          ? 'currentColor'
-                          : 'none'
-                      }
+                      fill={i < Math.floor(avgRating) ? 'currentColor' : 'none'}
                       className={
-                        i < Math.floor(product.avgRating) ? '' : 'text-gray-200'
+                        i < Math.floor(avgRating) ? '' : 'text-gray-200'
                       }
                     />
                   ))}
                 </div>
                 <span className="text-sm text-gray-500 font-medium border-l border-gray-200 pl-3">
-                  {product.reviewCount} Reviews
+                  {reviewCount} Reviews
                 </span>
               </div>
 
