@@ -1,10 +1,14 @@
 package com.pantryhub.product.controller;
 
+import com.pantryhub.product.dto.response.MultipleProductResDto;
+import com.pantryhub.product.dto.response.ProductDetailsResDto;
 import com.pantryhub.product.dto.response.ProductResDto;
+import com.pantryhub.product.service.ProductDetailsService;
 import com.pantryhub.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,32 +20,30 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private ProductDetailsService productDetailsService;
+
     @GetMapping
-    public ResponseEntity<List<ProductResDto>> getAllActiveProduct() {
-        List<ProductResDto> productResDtoList = productService.getAllActiveProduct();
+    public ResponseEntity<List<MultipleProductResDto>> getAllActiveProduct() {
+        List<MultipleProductResDto> productResDtoList = productService.getAllActiveProduct();
         return ResponseEntity.ok(productResDtoList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResDto> getActiveProductById(@PathVariable Long id) {
-        ProductResDto productResDto = productService.getActiveProductById(id);
+    public ResponseEntity<ProductDetailsResDto> getActiveProductById(@PathVariable Long id, Authentication authentication) {
+        ProductDetailsResDto productResDto = productDetailsService.getActiveProductById(id, authentication);
         return ResponseEntity.ok(productResDto);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<ProductResDto>> getSearchProduct(@RequestParam(name = "q", required = false) String keyword) {
-        List<ProductResDto> productResDtoList = productService.getSearchProduct(keyword);
-
-//        System.out.println("Size: " + productResDtoList.size());
-        if (productResDtoList.size() < 1)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
+    public ResponseEntity<List<MultipleProductResDto>> getSearchProduct(@RequestParam(name = "q", required = false) String keyword) {
+        List<MultipleProductResDto> productResDtoList = productService.getSearchProduct(keyword);
         return ResponseEntity.ok(productResDtoList);
     }
 
     @GetMapping("/getByCategory/{id}")
-    public ResponseEntity<?> getProductByCategoryId(@PathVariable Long id) {
-        List<ProductResDto> productResDto = productService.getProductByCategoryId(id);
+    public ResponseEntity<List<MultipleProductResDto>> getProductByCategoryId(@PathVariable Long id) {
+        List<MultipleProductResDto> productResDto = productService.getProductByCategoryId(id);
         return ResponseEntity.ok(productResDto);
     }
 

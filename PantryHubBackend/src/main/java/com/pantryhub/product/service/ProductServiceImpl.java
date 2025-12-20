@@ -1,6 +1,8 @@
 package com.pantryhub.product.service;
 
 import com.pantryhub.product.dto.request.ProductReqDto;
+import com.pantryhub.product.dto.response.MultipleProductResDto;
+import com.pantryhub.product.dto.response.ProductDetailsResDto;
 import com.pantryhub.product.dto.response.ProductResDto;
 import com.pantryhub.category.entity.Category;
 import com.pantryhub.product.entity.Product;
@@ -9,8 +11,14 @@ import com.pantryhub.product.mapper.ProductMapper;
 import com.pantryhub.category.repository.CategoryRepository;
 import com.pantryhub.product.repository.ProductRepository;
 import com.pantryhub.storage.FirebaseStorageService;
+import com.pantryhub.user.entity.Users;
+import com.pantryhub.user.repository.UserRepository;
+import com.pantryhub.user.service.UserService;
+import com.pantryhub.wishlist.repository.WishlistRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,25 +39,25 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public List<ProductResDto> getAllActiveProduct() {
-        List<Product> products = productRepository.findAllByStatus(ProductStatus.ACTIVE);
+    public List<MultipleProductResDto> getAllActiveProduct() {
+        List<Product> products = productRepository.findAllByStatusAndIsActiveTrue(ProductStatus.ACTIVE);
         return products.stream()
-                .map(ProductMapper::mapToProductResDto)
-                .collect(Collectors.toList());
+                .map(ProductMapper::mapToMultipleProductResDto)
+                .toList();
     }
 
-    @Override
-    public ProductResDto getActiveProductById(Long id) {
-        Product product = productRepository.findByStatusAndId(ProductStatus.ACTIVE, id);
-        return mapToProductResDto(product);
-    }
 
     @Override
-    public List<ProductResDto> getSearchProduct(String name) {
+    public List<MultipleProductResDto> getSearchProduct(String name) {
         List<Product> products = productRepository.findByNameContainingIgnoreCase(name);
-        return products.stream()
-                .map(ProductMapper::mapToProductResDto)
-                .collect(Collectors.toList());
+        List<MultipleProductResDto> multipleProductResDtoList = products.stream()
+                .map(ProductMapper::mapToMultipleProductResDto)
+                .toList();
+
+        if (multipleProductResDtoList.isEmpty())
+            throw  new EntityNotFoundException("Product Not Available");
+
+        return multipleProductResDtoList;
     }
 
     //admin
@@ -129,15 +137,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResDto> getProductByCategoryId(Long id) {
+    public List<MultipleProductResDto> getProductByCategoryId(Long id) {
         List<Product> product = productRepository.findByCategoryId_IdAndIsActiveTrue(id);
 
         if (product.isEmpty())
             throw new EntityNotFoundException("Products Not Available For This Category!");
 
         return product.stream()
-                .map(ProductMapper::mapToProductResDto)
-                .collect(Collectors.toList());
+                .map(ProductMapper::mapToMultipleProductResDto)
+                .toList();
     }
 
     private Product findProductById(Long id){

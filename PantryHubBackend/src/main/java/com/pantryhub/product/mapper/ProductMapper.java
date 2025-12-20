@@ -1,10 +1,15 @@
 package com.pantryhub.product.mapper;
 
 import com.pantryhub.product.dto.request.ProductReqDto;
+import com.pantryhub.product.dto.response.AdditionalInfoResDto;
+import com.pantryhub.product.dto.response.MultipleProductResDto;
 import com.pantryhub.product.dto.response.ProductResDto;
 import com.pantryhub.category.entity.Category;
 import com.pantryhub.product.entity.Product;
+import com.pantryhub.product.entity.ProductAdditionalInfo;
 import com.pantryhub.product.entity.ProductStatus;
+
+import java.time.LocalDate;
 
 import static com.pantryhub.common.util.SlugUtil.toSlug;
 
@@ -15,24 +20,37 @@ public class ProductMapper {
         dto.setId(product.getId());
         dto.setName(product.getName());
         dto.setSlug(product.getSlug());
-        dto.setDescription(product.getDescription());
         dto.setPrice(product.getPrice());
         dto.setOldPrice(product.getOldPrice());
         dto.setStockQuantity(product.getStockQuantity());
         dto.setUnitOfMeasure(product.getUnitOfMeasure());
         dto.setDealTag(product.getDealTag());
         dto.setStatus(product.getStatus().name());
-        dto.setRating(product.getRating());
-        dto.setReviewCount(product.getReviewCount());
         dto.setImageUrl(product.getImageUrl());
         dto.setGalleryImages(product.getGalleryImages());
         dto.setTags(product.getTags());
+
         if (product.getCategoryId() != null) {
             dto.setCategoryId(product.getCategoryId().getId());
             dto.setCategoryName(product.getCategoryId().getName());
         }
-        dto.setIsActive(product.getIsActive());
 
+        return dto;
+    }
+
+    public static MultipleProductResDto mapToMultipleProductResDto(Product product) {
+        MultipleProductResDto dto = new MultipleProductResDto();
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setPrice(product.getPrice());
+        dto.setOldPrice(product.getOldPrice());
+        dto.setStockQuantity(product.getStockQuantity());
+        dto.setDealTag(product.getDealTag());
+        dto.setImageUrl(product.getImageUrl());
+        if (product.getCategoryId() != null) {
+            dto.setCategoryId(product.getCategoryId().getId());
+            dto.setCategoryName(product.getCategoryId().getName());
+        }
         return dto;
     }
 
@@ -43,7 +61,6 @@ public class ProductMapper {
         Product product = new Product();
         product.setName(dto.getName());
         product.setSlug(toSlug(dto.getName())); //generate slug auto.
-        product.setDescription(dto.getDescription());
         product.setPrice(dto.getPrice());
 //        product.setOldPrice(dto.getPrice()); old price stored as null
         product.setCostPrice(dto.getCostPrice());
@@ -67,11 +84,6 @@ public class ProductMapper {
             product.setName(dto.getName());
             product.setSlug(toSlug(dto.getName()));
         }
-
-        // description
-        if (dto.getDescription() != null)
-            product.setDescription(dto.getDescription());
-
 
         // price
         if (dto.getPrice() != null) {
@@ -99,9 +111,6 @@ public class ProductMapper {
         if (dto.getTags() != null)
             product.setTags(dto.getTags());
 
-        // category
-//        if (dto.getCategoryId() != null)
-//            product.setCategoryId(dto.getCategoryId());
 
         // status string -> enum (handled in service)
         if (dto.getStatus() != null)
@@ -109,12 +118,21 @@ public class ProductMapper {
 
     }
 
-//    private static String generateSlug(String name) {
-//        if (name == null) return null;
-//
-//        return name.toLowerCase()
-//                .trim()
-//                .replaceAll("[^a-z0-9\\s-]", "")
-//                .replaceAll("\\s+", "-");
-//    }
+    public static AdditionalInfoResDto mapToAdditionalInfoResDto(ProductAdditionalInfo pai) {
+        AdditionalInfoResDto dto = new AdditionalInfoResDto();
+        dto.setBrand(pai.getBrand());
+        dto.setDescription(pai.getDescription());
+        dto.setCountryOfOrigin(pai.getCountryOfOrigin());
+        dto.setManufacturer(pai.getManufacturer());
+        dto.setExpiryDate(pai.getExpiryDate());
+        dto.setShelfLife(pai.getShelfLife());
+        dto.setStorageInstructions(pai.getStorageInstructions());
+        dto.setFoodType(pai.getFoodType());
+        dto.setOrganic(pai.getOrganic());
+        dto.setIsReturnable(pai.getIsReturnable());
+        dto.setIsRefundable(pai.getIsRefundable());
+
+        return dto;
+    }
+
 }

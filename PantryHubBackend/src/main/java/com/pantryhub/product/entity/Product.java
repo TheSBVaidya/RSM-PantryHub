@@ -30,9 +30,6 @@ public class Product {
     @Column(nullable = false, unique = true)
     private String slug;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
-
     @Column(nullable = false, precision = 10, scale = 1)
     private BigDecimal price;
 
@@ -78,6 +75,9 @@ public class Product {
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
+
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private ProductAdditionalInfo productAdditionalInfo;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;

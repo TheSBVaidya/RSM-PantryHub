@@ -1,0 +1,82 @@
+package com.pantryhub.product.service;
+
+import com.pantryhub.product.dto.response.AdditionalInfoResDto;
+import com.pantryhub.product.dto.response.ProductDetailsResDto;
+import com.pantryhub.product.dto.response.ProductResDto;
+import com.pantryhub.product.entity.Product;
+import com.pantryhub.product.entity.ProductAdditionalInfo;
+import com.pantryhub.product.repository.ProductAdditionalInfoRepository;
+import com.pantryhub.product.repository.ProductRepository;
+import com.pantryhub.review.dto.response.ReviewResDto;
+import com.pantryhub.review.entity.Review;
+import com.pantryhub.review.mapper.ReviewMapper;
+import com.pantryhub.review.repository.ReviewRepository;
+import com.pantryhub.user.entity.Users;
+import com.pantryhub.user.repository.UserRepository;
+import com.pantryhub.wishlist.repository.WishlistRepository;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+import static com.pantryhub.product.mapper.ProductMapper.mapToAdditionalInfoResDto;
+import static com.pantryhub.product.mapper.ProductMapper.mapToProductResDto;
+
+@Service
+@RequiredArgsConstructor
+public class ProductDetailsServiceImpl implements ProductDetailsService{
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
+    private final ProductAdditionalInfoRepository productAdditionalInfoRepository;
+    private final WishlistRepository wishlistRepository;
+    private final ReviewRepository reviewRepository;
+
+    @Override
+    public ProductDetailsResDto getActiveProductById(Long id, Authentication authentication) {
+
+        Users users = findUserByEmail(authentication.getName());
+        Product product = findProductById(id);
+        ProductAdditionalInfo productAdditionalInfo = findAdditionalInfoById(id);
+        List<Review> reviews = findAllProductReviews(id);
+        Boolean isWishlisted = isWishlisted(users.getId(), id);
+
+        ProductResDto productResDto = mapToProductResDto(product);
+        AdditionalInfoResDto additionalInfoResDto = mapToAdditionalInfoResDto(productAdditionalInfo);
+        List<ReviewResDto> reviewResDtos = reviews.stream()
+                .map(ReviewMapper::mapToReviewResDto)
+                .toList();
+
+        ProductDetailsResDto productDetailsResDto = new ProductDetailsResDto();
+        productDetailsResDto.setProduct(productResDto);
+        productDetailsResDto.setIsWishlisted(isWishlisted);
+        productDetailsResDto.setAdditionalInfo(additionalInfoResDto);
+        productDetailsResDto.setReviews(reviewResDtos);
+
+        return productDetailsResDto;
+    }
+
+    private Users findUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not Found"));
+    }
+
+    private Product findProductById(Long id){
+        return productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product Not Found"));
+    }
+
+    private ProductAdditionalInfo findAdditionalInfoById(Long id) {
+        return productAdditionalInfoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Additional Info Not Available"));
+    }
+
+    private List<Review> findAllProductReviews(Long id) {
+        return reviewRepository.findAllByProduct_IdAndIsActiveTrue(id);
+    }
+
+    private Boolean isWishlisted(Long userId, Long productId) {
+        return wishlistRepository.findByUserIdAndProductId(userId, productId).isPresent();
+    }
+}
