@@ -32,11 +32,16 @@ apiClient.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response && error.response.status === 401) {
+    if (
+      (error.response && error.response.status === 401) ||
+      (error.response && error.response.status === 403)
+    ) {
       console.log('Unauthorized! Token might be expired.');
 
       localStorage.removeItem('accessToken');
       localStorage.removeItem('user');
+
+      window.location.href = '/login';
     }
 
     return Promise.reject(error);

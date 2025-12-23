@@ -27,22 +27,21 @@ import static com.pantryhub.product.mapper.ProductMapper.mapToProductResDto;
 @Service
 @RequiredArgsConstructor
 public class ProductDetailsServiceImpl implements ProductDetailsService{
-    private final UserRepository userRepository;
+
     private final ProductRepository productRepository;
     private final ProductAdditionalInfoRepository productAdditionalInfoRepository;
     private final WishlistRepository wishlistRepository;
     private final ReviewRepository reviewRepository;
 
     @Override
-    public ProductDetailsResDto getActiveProductById(Long id, Authentication authentication) {
+    public ProductDetailsResDto getActiveProductById(Long productId, Long userId) {
 
-        Users users = findUserByEmail(authentication.getName());
-        Product product = findProductById(id);
-        ProductAdditionalInfo productAdditionalInfo = findAdditionalInfoById(id);
-        List<Review> reviews = findAllProductReviews(id);
-        Boolean isWishlisted = isWishlisted(users.getId(), id);
-        Long reviewCount = reviewCount(id);
-        Double avgRating = avgRating(id);
+        Product product = findProductById(productId);
+        ProductAdditionalInfo productAdditionalInfo = findAdditionalInfoById(productId);
+        List<Review> reviews = findAllProductReviews(productId);
+        Boolean isWishlisted = isWishlisted(userId, productId);
+        Long reviewCount = reviewCount(productId);
+        Double avgRating = avgRating(productId);
 
         ProductResDto productResDto = mapToProductResDto(product);
         AdditionalInfoResDto additionalInfoResDto = mapToAdditionalInfoResDto(productAdditionalInfo);
@@ -59,11 +58,6 @@ public class ProductDetailsServiceImpl implements ProductDetailsService{
         productDetailsResDto.setReviews(reviewResDtos);
 
         return productDetailsResDto;
-    }
-
-    private Users findUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("User not Found"));
     }
 
     private Product findProductById(Long id){

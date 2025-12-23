@@ -33,11 +33,13 @@ const ProductDetails = () => {
   // --- Fetch Product Data ---
   useEffect(() => {
     const fetchProductDetails = async () => {
+      const userId = JSON.parse(localStorage.getItem('user')).id;
+
       try {
         setLoading(true);
         // Assuming your backend endpoint is /products/{id}/details
         // which returns the structure { product: {...}, additionalInfo: {...}, reviews: [...] }
-        const response = await apiClient.get(`/product/${id}`);
+        const response = await apiClient.get(`/product/${id}/${userId}`);
         setProductFullData(response.data);
         setIsWishlisted(response.data.isWishlisted || false);
         setActiveImage(response.data.product.imageUrl);
@@ -103,7 +105,7 @@ const ProductDetails = () => {
         {/* --- Breadcrumbs --- */}
         <nav className="flex items-center gap-2 text-sm text-gray-500 mb-8 overflow-x-auto whitespace-nowrap">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/dashboard')}
             className="hover:text-green-600 flex items-center gap-1 transition-colors"
           >
             <Home size={14} /> Home

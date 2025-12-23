@@ -29,9 +29,9 @@ public class ProductController {
         return ResponseEntity.ok(productResDtoList);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductDetailsResDto> getActiveProductById(@PathVariable Long id, Authentication authentication) {
-        ProductDetailsResDto productResDto = productDetailsService.getActiveProductById(id, authentication);
+    @GetMapping("/{productId}/{userId}")
+    public ResponseEntity<ProductDetailsResDto> getActiveProductById(@PathVariable Long productId, @PathVariable Long userId) {
+        ProductDetailsResDto productResDto = productDetailsService.getActiveProductById(productId, userId);
         return ResponseEntity.ok(productResDto);
     }
 

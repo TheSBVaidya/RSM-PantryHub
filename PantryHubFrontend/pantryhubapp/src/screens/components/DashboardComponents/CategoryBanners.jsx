@@ -54,10 +54,11 @@ const initialCategories = [
   },
 ];
 
-const CategoryBanners = () => {
+const CategoryBanners = ({ onSelectedCategory, selectedCategoryId }) => {
   const [categories, setCategories] = useState(initialCategories);
 
   useEffect(() => {
+    console.log('Banner: ', selectedCategoryId);
     fetchCategories();
   }, []);
 
@@ -85,7 +86,10 @@ const CategoryBanners = () => {
         {categories.map((cat) => (
           <div
             key={cat.id}
-            className={`group ${cat.color} rounded-xl p-4 cursor-pointer hover:shadow-lg transition-all duration-300 border border-transparent hover:border-emerald-200`}
+            onClick={() => onSelectedCategory(cat.id, cat.name)}
+            className={`group rounded-xl p-4 cursor-pointer hover:shadow-lg transition-all duration-300 border 
+              ${selectedCategoryId === cat.id ? 'border-emerald-500 ring-2 ring-emerald-100' : 'border-transparent hover:border-emerald-200'}
+              ${cat.color || 'bg-gray-100'}`}
           >
             <div className="w-16 h-16 mb-3 mx-auto overflow-hidden rounded-full shadow-sm bg-white p-1">
               <img

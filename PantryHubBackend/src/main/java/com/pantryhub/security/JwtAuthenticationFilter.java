@@ -32,17 +32,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-//        String path = request.getServletPath();
-//        if (isPublicPath(path)) {
-//            // If it's public, skip this filter and pass the request on.
-//            filterChain.doFilter(request, response);
-//            return;
-//        }
+        String path = request.getServletPath();
+        if (isPublicPath(path)) {
+            // If it's public, skip this filter and pass the request on.
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         try {
             String jwt = getJwtFromRequest(request);
 
-            if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
+            if (StringUtils.hasText(jwt) || jwtTokenProvider.validateToken(jwt)) {
 
                 Long userId = jwtTokenProvider.getUserIdFromJwt(jwt);
                 String email = jwtTokenProvider.getEmailFromJwt(jwt);
@@ -60,6 +60,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         } catch (Exception ex) {
             logger.error("Could not set user authentication in security context", ex);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT is Expire");
         }
 
         filterChain.doFilter(request, response);
@@ -68,11 +69,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String getJwtFromRequest(HttpServletRequest httpServletRequest) {
         String bearerToken = httpServletRequest.getHeader("Authorization");
 
+        System.out.println("getJwtFromRequest: " + bearerToken);
+
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
 
         return null;
     }
+
+    private boolean isPublicPath(String path) {
+        return path.startsWith("/auth")
+                || path.startsWith("/category")
+                || path.startsWith("/product");
+    }
+
 
 }

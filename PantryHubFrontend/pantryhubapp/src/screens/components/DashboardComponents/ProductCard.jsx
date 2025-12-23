@@ -29,20 +29,20 @@ const ProductCard = ({ product }) => {
         )}
         {discount && (
           <span className="px-3 py-1 text-xs font-bold text-white bg-rose-500 rounded-full shadow-sm">
-            -{discount}%
+            {discount}%
           </span>
         )}
       </div>
 
       {/* Action Buttons (appear on hover) */}
-      <div className="absolute top-4 right-4 z-10 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0 transition-all duration-300">
-        <button className="p-2 bg-white text-gray-600 rounded-full shadow-md hover:bg-emerald-50 hover:text-emerald-600 transition-colors">
-          <Heart size={18} />
-        </button>
-        <button className="p-2 bg-white text-gray-600 rounded-full shadow-md hover:bg-emerald-50 hover:text-emerald-600 transition-colors">
-          <Eye size={18} />
-        </button>
-      </div>
+      {/*<div className="absolute top-4 right-4 z-10 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0 transition-all duration-300">*/}
+      {/*  <button className="p-2 bg-white text-gray-600 rounded-full shadow-md hover:bg-emerald-50 hover:text-emerald-600 transition-colors">*/}
+      {/*    <Heart size={18} />*/}
+      {/*  </button>*/}
+      {/*  <button className="p-2 bg-white text-gray-600 rounded-full shadow-md hover:bg-emerald-50 hover:text-emerald-600 transition-colors">*/}
+      {/*    <Eye size={18} />*/}
+      {/*  </button>*/}
+      {/*</div>*/}
 
       {/* Product Image */}
       <div className="relative h-48 w-full bg-gray-50 overflow-hidden p-4">
@@ -67,7 +67,7 @@ const ProductCard = ({ product }) => {
               <Star
                 key={i}
                 size={14}
-                fill={i < (product.rating || 4) ? 'currentColor' : 'none'}
+                fill={i < (product.avgRating || 4) ? 'currentColor' : 'none'}
               />
             ))}
           </div>

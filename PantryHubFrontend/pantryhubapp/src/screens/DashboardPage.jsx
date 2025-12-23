@@ -15,19 +15,31 @@ import apiClient from '../api/axiosInstance.js'; // (Assume standard UI)
 
 function Dashboard() {
   const [products, setProducts] = useState(popularProducts);
+  const [selectedCategory, setSelectedCategory] = useState({
+    id: null,
+    name: 'All',
+  });
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [selectedCategory.id]);
 
   const fetchProducts = async () => {
     try {
-      const response = await apiClient.get('/product');
+      const endpoint = selectedCategory.id
+        ? `/product/getByCategory/${selectedCategory.id}`
+        : '/product';
+      const response = await apiClient.get(endpoint);
       setProducts(response.data);
     } catch (err) {
       toast.error('Unable to fetch Products');
       console.log('Unable to fetch Products: ', err);
     }
+  };
+
+  const handleCategorySelect = (id, name) => {
+    console.log('Category Selected:', name, id);
+    setSelectedCategory({ id, name });
   };
 
   return (
@@ -38,18 +50,15 @@ function Dashboard() {
         <HeroSection />
 
         {/* Categories */}
-        <CategoryBanners />
+        <CategoryBanners onSelectedCategory={handleCategorySelect} />
 
         {/* Popular Products */}
         <ProductSection
-          title="Popular Products"
-          categories={[
-            'All',
-            'Milks & Dairies',
-            'Coffees & Teas',
-            'Vegetables',
-            'Fruits',
-          ]}
+          title={
+            selectedCategory.id
+              ? `Products in ${selectedCategory.name}`
+              : 'Popular Products'
+          }
           products={products}
         />
 

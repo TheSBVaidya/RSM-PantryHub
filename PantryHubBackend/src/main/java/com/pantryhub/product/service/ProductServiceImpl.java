@@ -10,6 +10,7 @@ import com.pantryhub.product.entity.ProductStatus;
 import com.pantryhub.product.mapper.ProductMapper;
 import com.pantryhub.category.repository.CategoryRepository;
 import com.pantryhub.product.repository.ProductRepository;
+import com.pantryhub.review.repository.ReviewRepository;
 import com.pantryhub.storage.FirebaseStorageService;
 import com.pantryhub.user.entity.Users;
 import com.pantryhub.user.repository.UserRepository;
@@ -37,12 +38,14 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final FirebaseStorageService firebaseStorageService;
     private final CategoryRepository categoryRepository;
+    private final ReviewRepository reviewRepository;
 
     @Override
     public List<MultipleProductResDto> getAllActiveProduct() {
         List<Product> products = productRepository.findAllByStatusAndIsActiveTrue(ProductStatus.ACTIVE);
         return products.stream()
                 .map(ProductMapper::mapToMultipleProductResDto)
+                .map(this::enrichWithReviewData)
                 .toList();
     }
 
@@ -52,6 +55,7 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepository.findByNameContainingIgnoreCase(name);
         List<MultipleProductResDto> multipleProductResDtoList = products.stream()
                 .map(ProductMapper::mapToMultipleProductResDto)
+                .map(this::enrichWithReviewData)
                 .toList();
 
         if (multipleProductResDtoList.isEmpty())
@@ -145,11 +149,27 @@ public class ProductServiceImpl implements ProductService {
 
         return product.stream()
                 .map(ProductMapper::mapToMultipleProductResDto)
+                .map(this::enrichWithReviewData)
                 .toList();
     }
 
     private Product findProductById(Long id){
         return productRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product Not Found: "+ id));
+    }
+
+    private Long reviewCount(Long productId) {
+        return reviewRepository.countByProductId(productId);
+    }
+
+    private Double avgRating(Long productId) {
+        return reviewRepository.findAverageRatingByProductId(productId);
+    }
+
+    private MultipleProductResDto enrichWithReviewData(MultipleProductResDto dto) {
+        dto.setAvgRating(avgRating(dto.getId()));
+        dto.setReviewCount(reviewCount(dto.getId()));
+
+        return dto;
     }
 }

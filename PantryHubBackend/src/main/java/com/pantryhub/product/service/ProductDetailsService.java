@@ -4,5 +4,5 @@ import com.pantryhub.product.dto.response.ProductDetailsResDto;
 import org.springframework.security.core.Authentication;
 
 public interface ProductDetailsService {
-    ProductDetailsResDto getActiveProductById(Long id, Authentication authentication);
+    ProductDetailsResDto getActiveProductById(Long productId, Long userId);
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const viewTitle = {
   '/account': 'My Account',
@@ -7,6 +7,7 @@ const viewTitle = {
   '/dashboard': 'Home',
   '/cart': 'Cart',
   '/wishlist': 'Wishlist',
+  '/product': 'Product',
 };
 
 const Breadcrumb = ({ currentView }) => {
@@ -16,7 +17,11 @@ const Breadcrumb = ({ currentView }) => {
 
   useEffect(() => {
     console.log('CurrentView: ' + currentView);
-    setTitle(viewTitle[currentView] || 'page');
+    if (currentView.startsWith('/product')) {
+      setTitle('Product');
+    } else {
+      setTitle(viewTitle[currentView] || 'page');
+    }
   }, [currentView]);
 
   return (

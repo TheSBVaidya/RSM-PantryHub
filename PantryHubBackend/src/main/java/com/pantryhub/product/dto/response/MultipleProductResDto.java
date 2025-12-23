@@ -22,4 +22,6 @@ public class MultipleProductResDto {
     private Long categoryId;
     private String categoryName;
     private String dealTag;
+    private Double avgRating;
+    private Long reviewCount;
 }

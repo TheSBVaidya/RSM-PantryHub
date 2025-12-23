@@ -11,7 +11,13 @@ import Breadcrumb from './screens/components/Breadcrumb.jsx';
 import CartPage from './screens/CartPage.jsx';
 import WishlistPage from './screens/WishlistPage.jsx';
 import { Toaster } from 'sonner';
-import { replace, Route, Routes, useNavigate } from 'react-router-dom';
+import {
+  replace,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
 import ProductDetails from './screens/ProductDetails.jsx';
 
 function App() {
@@ -25,7 +31,8 @@ function App() {
   const viewsWithoutHeaderFooter = ['/login', '/signup', '/complete-profile']; // List of views that should NOT have a Header or Footer
   const viewsWithoutBreadcrumb = ['/login', '/signup', '/complete-profile'];
 
-  const currentPath = window.location.pathname;
+  const location = useLocation();
+  const currentPath = location.pathname;
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
