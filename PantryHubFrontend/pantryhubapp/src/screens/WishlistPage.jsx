@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { FiTrash2, FiShoppingCart, FiAlertCircle } from 'react-icons/fi';
 // import apiClient from '../api/axiosInstance.js'; // Commented out API client
 import { SpinIcon } from './components/Icons.jsx';
@@ -149,8 +149,8 @@ const WishlistPage = ({ user }) => {
   const [loading, setLoading] = useState(false); // No loading initially as data is hardcoded
 
   useEffect(() => {
-    fetchWishlist();
-  }, []);
+    if (user?.id) fetchWishlist();
+  }, [user]); // Re-run if user changes (e.g. login completes)
 
   const fetchWishlist = async () => {
     setLoading(true);
