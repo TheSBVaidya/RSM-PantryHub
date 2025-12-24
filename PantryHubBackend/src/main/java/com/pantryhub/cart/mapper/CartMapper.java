@@ -62,10 +62,13 @@ public class CartMapper {
 
     public static Cart mapToUpdateQuantity(Cart cart, Integer quantity, CartItem cartItem) {
 
-        if (quantity <= 0) {
+        Integer newQuantity = cartItem.getQuantity() + quantity;
+
+        if (newQuantity <= 0) {
             cart.getCartItems().remove(cartItem);
+            cartItem.setCart(null);
         } else {
-            cartItem.setQuantity(cartItem.getQuantity() + quantity);
+            cartItem.setQuantity(newQuantity);
         }
 
         cart.setTotalAmount(recalculateCart(cart));
